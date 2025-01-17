@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using System.Xml;
 using CnSharp.VisualStudio.Extensions.Projects;
+using CnSharp.VisualStudio.Extensions.Util;
 using EnvDTE;
 
 namespace CnSharp.VisualStudio.NuPack.Util

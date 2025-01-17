@@ -1,8 +1,7 @@
 ﻿using System;
 using System.ComponentModel.Design;
-using System.Linq;
+using System.Windows.Forms;
 using CnSharp.VisualStudio.Extensions;
-using CnSharp.VisualStudio.NuPack.Extensions;
 using CnSharp.VisualStudio.NuPack.Forms;
 using Microsoft.VisualStudio.Shell;
 using Task = System.Threading.Tasks.Task;
@@ -12,17 +11,17 @@ namespace CnSharp.VisualStudio.NuPack.Commands
     /// <summary>
     /// Command handler
     /// </summary>
-    internal sealed class AssemblyInfoEditCommand
+    internal sealed class DeployPackageCommand
     {
         /// <summary>
         /// Command ID.
         /// </summary>
-        public const int CommandId = 0x0100;
+        public const int CommandId = PackageIds.cmdidDeployPackageCommand;
 
         /// <summary>
         /// Command menu group (command set GUID).
         /// </summary>
-        public static readonly Guid CommandSet = new Guid("2dff605d-c360-4f36-9f5e-1b117fcd71f4");
+        public static readonly Guid CommandSet = PackageGuids.guidDeployPackageCmdSet;
 
         /// <summary>
         /// VS Package that provides this command, not null.
@@ -30,25 +29,25 @@ namespace CnSharp.VisualStudio.NuPack.Commands
         private readonly AsyncPackage package;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="AssemblyInfoEditCommand"/> class.
+        /// Initializes a new instance of the <see cref="DeployPackageCommand"/> class.
         /// Adds our command handlers for menu (commands must exist in the command table file)
         /// </summary>
         /// <param name="package">Owner package, not null.</param>
         /// <param name="commandService">Command service to add command to, not null.</param>
-        private AssemblyInfoEditCommand(AsyncPackage package, OleMenuCommandService commandService)
+        private DeployPackageCommand(AsyncPackage package, OleMenuCommandService commandService)
         {
             this.package = package ?? throw new ArgumentNullException(nameof(package));
             commandService = commandService ?? throw new ArgumentNullException(nameof(commandService));
 
             var menuCommandID = new CommandID(CommandSet, CommandId);
-            var menuItem = new MenuCommand(Execute, menuCommandID);
+            var menuItem = new MenuCommand(this.Execute, menuCommandID);
             commandService.AddCommand(menuItem);
         }
 
         /// <summary>
         /// Gets the instance of the command.
         /// </summary>
-        public static AssemblyInfoEditCommand Instance
+        public static DeployPackageCommand Instance
         {
             get;
             private set;
@@ -57,11 +56,11 @@ namespace CnSharp.VisualStudio.NuPack.Commands
         /// <summary>
         /// Gets the service provider from the owner package.
         /// </summary>
-        private IAsyncServiceProvider ServiceProvider
+        private Microsoft.VisualStudio.Shell.IAsyncServiceProvider ServiceProvider
         {
             get
             {
-                return package;
+                return this.package;
             }
         }
 
@@ -71,12 +70,12 @@ namespace CnSharp.VisualStudio.NuPack.Commands
         /// <param name="package">Owner package, not null.</param>
         public static async Task InitializeAsync(AsyncPackage package)
         {
-            // Switch to the main thread - the call to AddCommand in AssemblyInfoEditCommand's constructor requires
+            // Switch to the main thread - the call to AddCommand in DeployPackageCommand's constructor requires
             // the UI thread.
             await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync(package.DisposalToken);
 
             OleMenuCommandService commandService = await package.GetServiceAsync(typeof(IMenuCommandService)) as OleMenuCommandService;
-            Instance = new AssemblyInfoEditCommand(package, commandService);
+            Instance = new DeployPackageCommand(package, commandService);
         }
 
         /// <summary>
@@ -89,30 +88,12 @@ namespace CnSharp.VisualStudio.NuPack.Commands
         private void Execute(object sender, EventArgs e)
         {
             ThreadHelper.ThrowIfNotOnUIThread();
-            var dte = Host.Instance.Dte2;
-            try
-            {
-                var sln = dte.Solution;
-                var sp = SolutionDataCache.Instance.GetSolutionProperties(sln.FileName);
-                var allProjects = sp.Projects;
-                if (!allProjects.Any())
-                {
-                    package.ShowError("No project is opening.", Common.ProductName);
-                    return;
-                }
 
-                var projectsWithAssemblyInfo = allProjects.Where(p => p.HasAssemblyInfo()).ToList();
-                if (!projectsWithAssemblyInfo.Any())
-                {
-                    package.ShowError("No project with AssemblyInfo found.", Common.ProductName);
-                    return;
-                }
-                new AssemblyInfoForm(projectsWithAssemblyInfo).ShowDialog();
-            }
-            catch (Exception exception)
-            {
-                package.ShowError(exception.Message, Common.ProductName);
-            }
+            var dte = Host.Instance.Dte2;
+            var form = new DeployWizard(dte);
+            form.StartPosition = FormStartPosition.CenterScreen;
+            if(form.ShowDialog() == DialogResult.OK)
+                form.SaveAndBuild();
         }
     }
 }

@@ -63,10 +63,27 @@ namespace CnSharp.VisualStudio.NuPack {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap close {
+        internal static System.Drawing.Bitmap close32 {
             get {
-                object obj = ResourceManager.GetObject("close", resourceCulture);
+                object obj = ResourceManager.GetObject("close32", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &lt;Project&gt;
+        ///  &lt;PropertyGroup&gt;
+        ///   &lt;Copyright&gt;copyright © $company$&lt;/Copyright&gt;
+        ///   &lt;Product&gt;$product$&lt;/Product&gt;
+        ///   &lt;Company&gt;$company$&lt;/Company&gt;
+        ///   &lt;Authors&gt;$company$&lt;/Authors&gt;
+        ///   &lt;Owners&gt;$company$&lt;/Owners&gt;
+        ///&lt;/PropertyGroup&gt;
+        ///&lt;/Project&gt;.
+        /// </summary>
+        internal static string DirectoryBuildPropsTemplate {
+            get {
+                return ResourceManager.GetString("DirectoryBuildPropsTemplate", resourceCulture);
             }
         }
         
@@ -76,16 +93,6 @@ namespace CnSharp.VisualStudio.NuPack {
         internal static System.Drawing.Bitmap folder {
             get {
                 object obj = ResourceManager.GetObject("folder", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap HelpIndexFile {
-            get {
-                object obj = ResourceManager.GetObject("HelpIndexFile", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -117,6 +124,36 @@ namespace CnSharp.VisualStudio.NuPack {
             get {
                 object obj = ResourceManager.GetObject("nuget", resourceCulture);
                 return ((System.Drawing.Icon)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &lt;?xml version=&quot;1.0&quot;?&gt;
+        ///&lt;package&gt;
+        ///  &lt;metadata&gt;
+        ///    &lt;!--*--&gt;
+        ///    &lt;id&gt;$id$&lt;/id&gt;
+        ///    &lt;!--*--&gt;
+        ///    &lt;version&gt;$version$&lt;/version&gt;
+        ///    &lt;title&gt;&lt;/title&gt;
+        ///    &lt;!--*--&gt;
+        ///    &lt;authors&gt;$author$&lt;/authors&gt;
+        ///    &lt;owners&gt;$author$&lt;/owners&gt;
+        ///&lt;!--
+        ///    &lt;licenseUrl&gt;&lt;/licenseUrl&gt;
+        ///    &lt;projectUrl&gt;&lt;/projectUrl&gt;
+        ///    &lt;iconUrl&gt;&lt;/iconUrl&gt;
+        ///--&gt;
+        ///    &lt;requireLicenseAcceptance&gt;false&lt;/requireLicenseAcceptance&gt;
+        ///    &lt;!--*--&gt;
+        ///    &lt;description&gt;$description$&lt;/description&gt;
+        ///    &lt;!--*--&gt;
+        ///    &lt;releaseNotes&gt; &lt;/releaseNotes&gt;
+        ///    &lt;copyrig [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string NuSpecTemplate {
+            get {
+                return ResourceManager.GetString("NuSpecTemplate", resourceCulture);
             }
         }
         

@@ -1,54 +1,42 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.27130.2036
+# Visual Studio Version 17
+VisualStudioVersion = 17.12.35527.113
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{1CAC44E8-033D-416A-AD8B-C2A129774D9D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NuPack", "NuPack.csproj", "{D53600BB-F94D-4421-8B05-22F206F23A5F}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{99AB1735-8371-4015-ABD6-C5A65BCB25BD}"
 	ProjectSection(SolutionItems) = preProject
 		..\.gitignore = ..\.gitignore
+		..\LICENSE.txt = ..\LICENSE.txt
 		..\README.md = ..\README.md
-	EndProjectSection
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NuPack", "NuPack.csproj", "{864E8C41-4F0C-4B2D-8ADB-811ADD511AAA}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FormTests", "..\tests\FormTests\FormTests.csproj", "{D474AEE8-023F-478A-96C5-288D924A128A}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ScreenShots", "ScreenShots", "{79CF0609-B508-4D67-A167-09DF4F396922}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "2.x", "2.x", "{845AAB87-352D-40BE-9A91-1A871106B8DA}"
-	ProjectSection(SolutionItems) = preProject
-		..\screenshots\2.x\AssemblyInfoCommandMenu.png = ..\screenshots\2.x\AssemblyInfoCommandMenu.png
-		..\screenshots\2.x\AssemblyInfoDialog.png = ..\screenshots\2.x\AssemblyInfoDialog.png
-		..\screenshots\2.x\DeployCommandMenu.png = ..\screenshots\2.x\DeployCommandMenu.png
-		..\screenshots\2.x\DeployDialog.png = ..\screenshots\2.x\DeployDialog.png
-		..\screenshots\2.x\DirectoryBuildPropsCommandMenu.png = ..\screenshots\2.x\DirectoryBuildPropsCommandMenu.png
-		..\screenshots\2.x\NuspecCommandMenu.png = ..\screenshots\2.x\NuspecCommandMenu.png
-		..\screenshots\2.x\PackageMetadataDialog.png = ..\screenshots\2.x\PackageMetadataDialog.png
+		..\release_notes.txt = ..\release_notes.txt
 	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
+		Debug|arm64 = Debug|arm64
+		Debug|x86 = Debug|x86
 		Release|Any CPU = Release|Any CPU
+		Release|arm64 = Release|arm64
+		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{864E8C41-4F0C-4B2D-8ADB-811ADD511AAA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{864E8C41-4F0C-4B2D-8ADB-811ADD511AAA}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{864E8C41-4F0C-4B2D-8ADB-811ADD511AAA}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{864E8C41-4F0C-4B2D-8ADB-811ADD511AAA}.Release|Any CPU.Build.0 = Release|Any CPU
-		{D474AEE8-023F-478A-96C5-288D924A128A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D474AEE8-023F-478A-96C5-288D924A128A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D474AEE8-023F-478A-96C5-288D924A128A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D474AEE8-023F-478A-96C5-288D924A128A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D53600BB-F94D-4421-8B05-22F206F23A5F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D53600BB-F94D-4421-8B05-22F206F23A5F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D53600BB-F94D-4421-8B05-22F206F23A5F}.Debug|arm64.ActiveCfg = Debug|arm64
+		{D53600BB-F94D-4421-8B05-22F206F23A5F}.Debug|arm64.Build.0 = Debug|arm64
+		{D53600BB-F94D-4421-8B05-22F206F23A5F}.Debug|x86.ActiveCfg = Debug|x86
+		{D53600BB-F94D-4421-8B05-22F206F23A5F}.Debug|x86.Build.0 = Debug|x86
+		{D53600BB-F94D-4421-8B05-22F206F23A5F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D53600BB-F94D-4421-8B05-22F206F23A5F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D53600BB-F94D-4421-8B05-22F206F23A5F}.Release|arm64.ActiveCfg = Release|arm64
+		{D53600BB-F94D-4421-8B05-22F206F23A5F}.Release|arm64.Build.0 = Release|arm64
+		{D53600BB-F94D-4421-8B05-22F206F23A5F}.Release|x86.ActiveCfg = Release|x86
+		{D53600BB-F94D-4421-8B05-22F206F23A5F}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
-	EndGlobalSection
-	GlobalSection(NestedProjects) = preSolution
-		{79CF0609-B508-4D67-A167-09DF4F396922} = {1CAC44E8-033D-416A-AD8B-C2A129774D9D}
-		{845AAB87-352D-40BE-9A91-1A871106B8DA} = {79CF0609-B508-4D67-A167-09DF4F396922}
-	EndGlobalSection
-	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {AE6DA125-E695-43A8-9D42-B62669948E64}
 	EndGlobalSection
 EndGlobal

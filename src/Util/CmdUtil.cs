@@ -1,14 +1,13 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Threading;
-using CnSharp.VisualStudio.Extensions;
 
 namespace CnSharp.VisualStudio.NuPack.Util
 {
     public class CmdUtil
     {
         //cmd issues goes here:https://stackoverflow.com/questions/139593/processstartinfo-hanging-on-waitforexit-why
-        public static void RunCmd(string script)
+        public static bool RunCmd(string script, Action<string> outputMessageHandler = null, Action<string> errorMessageHandler = null)
         {
             using (var process = new Process())
             {
@@ -30,7 +29,7 @@ namespace CnSharp.VisualStudio.NuPack.Util
                         }
                         else
                         {
-                            Host.Instance.Dte2.OutputMessage(Common.ProductName, Environment.NewLine+e.Data);
+                            outputMessageHandler?.Invoke(e.Data);
                         }
                     };
                     process.ErrorDataReceived += (sender, e) =>
@@ -41,7 +40,7 @@ namespace CnSharp.VisualStudio.NuPack.Util
                         }
                         else
                         {
-                            Host.Instance.Dte2.OutputMessage(Common.ProductName, Environment.NewLine + e.Data);
+                            errorMessageHandler?.Invoke(e.Data);
                         }
                     };
 
@@ -58,6 +57,55 @@ namespace CnSharp.VisualStudio.NuPack.Util
                     process.BeginErrorReadLine();
 
                     process.WaitForExit();
+                    return process.ExitCode == 0;
+                }
+            }
+        }
+
+        public static bool RunDotnet(string arguments, Action<string> outputMessageHandler = null, Action<string> errorMessageHandler = null)
+        {
+            var startInfo = new ProcessStartInfo
+            {
+                FileName = "dotnet",
+                Arguments = arguments,
+                RedirectStandardOutput = true,
+                RedirectStandardError = true,
+                UseShellExecute = false,
+                CreateNoWindow = true
+            };
+
+            using (var process = new Process { StartInfo = startInfo })
+            {
+                using (var outputWaitHandle = new AutoResetEvent(false))
+                using (var errorWaitHandle = new AutoResetEvent(false))
+                {
+                    process.OutputDataReceived += (sender, e) => {
+                        if (e.Data == null)
+                        {
+                            outputWaitHandle.Set();
+                        }
+                        else
+                        {
+                            outputMessageHandler?.Invoke(e.Data);
+                        }
+                    };
+                    process.ErrorDataReceived += (sender, e) =>
+                    {
+                        if (e.Data == null)
+                        {
+                            errorWaitHandle.Set();
+                        }
+                        else
+                        {
+                            errorMessageHandler?.Invoke(e.Data);
+                        }
+                    };
+
+                    process.Start();
+                    process.BeginOutputReadLine();
+                    process.BeginErrorReadLine();
+                    process.WaitForExit();
+                    return process.ExitCode == 0;
                 }
             }
         }

@@ -1,7 +1,5 @@
 ﻿using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Linq;
-using CnSharp.VisualStudio.Extensions;
 using EnvDTE;
 
 namespace CnSharp.VisualStudio.NuPack.Extensions
@@ -29,57 +27,16 @@ namespace CnSharp.VisualStudio.NuPack.Extensions
 
     public class SolutionProperties
     {
-        private List<Project> _projects;
-
-        public List<Project> Projects
-        {
-            get { return _projects; }
-            set
-            {
-                _projects = value;
-                if (_projects != null)
-                {
-                    ClassicProjects.AddRange(_projects?.Where(p => p.IsUAP() || p.IsNetFrameworkProject()));
-                    SdkBasedProjects.AddRange(_projects?.Where(p => p.IsSdkBased()));
-                }
-                else
-                {
-                    ClassicProjects.Clear();
-                    SdkBasedProjects.Clear();
-                }
-            }
-        }
-
-        public List<Project> ClassicProjects { get; private set; } = new List<Project>();
-        public List<Project> SdkBasedProjects { get; private set; } = new List<Project>();
-        public bool HasClassicProjects => ClassicProjects?.Any() == true;
-        public bool HasSdkBasedProjects => SdkBasedProjects?.Any() == true;
+        public List<Project> Projects { get; set; } = new List<Project>();
 
         public void AddProject(Project project)
         {
-            if(_projects == null) _projects = new List<Project>();
-            _projects.Add(project);
-            if (project.IsUAP() || project.IsNetFrameworkProject())
-            {
-               ClassicProjects.Add(project);
-            }
-            else if (project.IsSdkBased())
-            {
-                SdkBasedProjects.Add(project);
-            }
+            Projects.Add(project);
         }
 
         public void RemoveProject(Project project)
         {
-            _projects.Remove(project);
-            if (project.IsUAP() || project.IsNetFrameworkProject())
-            {
-                ClassicProjects.Remove(project);
-            }
-            else if (project.IsSdkBased())
-            {
-                SdkBasedProjects.Remove(project);
-            }
+            Projects.Remove(project);
         }
     }
 }

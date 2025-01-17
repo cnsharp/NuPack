@@ -1,18 +1,14 @@
 ﻿using System.Reflection;
-using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 [assembly: AssemblyTitle("NuPack")]
-[assembly: AssemblyDescription("Visual Studio extension for building and publishing NuGet packages.")]
+[assembly: AssemblyDescription("A Nuget packaging and deploying wizard for VS 2022.")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("CnSharp Studio")]
 [assembly: AssemblyProduct("NuPack")]
-[assembly: AssemblyCopyright("Copyright © CnSharp Studio 2013-2019")]
-[assembly: AssemblyTrademark("")]
+[assembly: AssemblyCopyright("Copyright \u00a9 CnSharp Studio 2015-2025")]
+[assembly: AssemblyTrademark("NuPack")]
 [assembly: AssemblyCulture("")]
-
-
 [assembly: ComVisible(false)]
-
-[assembly: AssemblyVersion("3.0.0")]
-[assembly: AssemblyFileVersion("3.0.0")]
+[assembly: AssemblyVersion("17.0.0.0")]
+[assembly: AssemblyFileVersion("17.0.0.0")]

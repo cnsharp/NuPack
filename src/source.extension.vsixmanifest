@@ -1,27 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
     <Metadata>
-        <Identity Id="NuPack.CnSharp.969b0d0e-e751-4464-b958-c1896bfeb363" Version="3.0" Language="en-US" Publisher="CnSharp Studio" />
-        <DisplayName>NuPack</DisplayName>
-        <Description xml:space="preserve">A tiny tool for building and publishing NuGet packages.</Description>
+        <Identity Id="nupack2022.d2452476-22fd-4075-a2bf-bd967e65abdc" Version="1.0" Language="en-US" Publisher="CnSharp Studio" />
+        <DisplayName>NuPack 2022</DisplayName>
+        <Description xml:space="preserve">A wizard for building and deploying NuGet packages.</Description>
         <MoreInfo>http://www.cnsharp.com</MoreInfo>
-        <License>license.txt</License>
-        <ReleaseNotes>release_notes.txt</ReleaseNotes>
         <Icon>Resources\logo.ico</Icon>
-        <Tags>AssemblyInfo,NuGet,NuPack,Package,Deploy,msbuild,pack,.NET Core</Tags>
+        <Tags>NuGet,NuPack,Package,Deploy</Tags>
     </Metadata>
     <Installation>
-        <InstallationTarget Version="[15.0,17.0)" Id="Microsoft.VisualStudio.Community" />
-        <InstallationTarget Version="[15.0,17.0)" Id="Microsoft.VisualStudio.Pro" />
-        <InstallationTarget Version="[15.0,17.0)" Id="Microsoft.VisualStudio.Enterprise" />
+        <InstallationTarget Id="Microsoft.VisualStudio.Community" Version="[17.0, 18.0)">
+            <ProductArchitecture>amd64</ProductArchitecture>
+        </InstallationTarget>
     </Installation>
     <Dependencies>
         <Dependency Id="Microsoft.Framework.NDP" DisplayName="Microsoft .NET Framework" d:Source="Manual" Version="[4.5,)" />
     </Dependencies>
+    <Prerequisites>
+        <Prerequisite Id="Microsoft.VisualStudio.Component.CoreEditor" Version="[17.0,18.0)" DisplayName="Visual Studio core editor" />
+    </Prerequisites>
     <Assets>
         <Asset Type="Microsoft.VisualStudio.VsPackage" d:Source="Project" d:ProjectName="%CurrentProject%" Path="|%CurrentProject%;PkgdefProjectOutputGroup|" />
     </Assets>
-    <Prerequisites>
-        <Prerequisite Id="Microsoft.VisualStudio.Component.CoreEditor" Version="[15.0,)" DisplayName="Visual Studio core editor" />
-    </Prerequisites>
 </PackageManifest>
