@@ -90,7 +90,7 @@ namespace CnSharp.VisualStudio.NuPack.Commands
             ThreadHelper.ThrowIfNotOnUIThread();
 
             var dte = Host.Instance.Dte2;
-            var form = new DeployWizard(dte);
+            var form = new DeployWizard(dte, package);
             form.StartPosition = FormStartPosition.CenterScreen;
             if(form.ShowDialog() == DialogResult.OK)
                 form.SaveAndBuild();

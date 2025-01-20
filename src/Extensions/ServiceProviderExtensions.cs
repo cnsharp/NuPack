@@ -26,14 +26,14 @@ namespace CnSharp.VisualStudio.NuPack.Extensions
                 OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST);
         }
 
-        public static void ShowQuestion(this IServiceProvider serviceProvider, string message, string title)
+        public static bool ShowQuestion(this IServiceProvider serviceProvider, string message, string title)
         {
-            VsShellUtilities.ShowMessageBox(
+           return VsShellUtilities.ShowMessageBox(
                 serviceProvider,
                 message, title,
                 OLEMSGICON.OLEMSGICON_WARNING,
                 OLEMSGBUTTON.OLEMSGBUTTON_YESNO,
-                OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST);
+                OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST) == 6;
         }
     }
 }

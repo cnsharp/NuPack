@@ -13,6 +13,7 @@ using CnSharp.VisualStudio.NuPack.Models;
 using CnSharp.VisualStudio.NuPack.Util;
 using EnvDTE;
 using EnvDTE80;
+using Microsoft.VisualStudio.Shell;
 using NuGet.Packaging;
 using NuGet.Versioning;
 using Process = System.Diagnostics.Process;
@@ -24,6 +25,7 @@ namespace CnSharp.VisualStudio.NuPack.Forms
         private readonly DTE2 _dte;
         private readonly ManifestMetadata _metadata;
         private readonly ManifestMetadataViewModel _metadataVM;
+        private readonly AsyncPackage _package;
         private readonly PackageMetadataControl _metadataControl;
         private readonly PackOptionsControl _optionsControl;
         private readonly PackageProjectProperties _ppp;
@@ -55,9 +57,10 @@ namespace CnSharp.VisualStudio.NuPack.Forms
             BindSources();
         }
 
-        public DeployWizard(DTE2 dte) : this()
+        public DeployWizard(DTE2 dte, AsyncPackage package) : this()
         {
             _dte = dte;
+            _package = package;
             var project = dte.GetActiveProject();
             _ppp = project.GetPackageProjectProperties();
             _metadata = _ppp.ToManifestMetadata();
@@ -114,7 +117,9 @@ namespace CnSharp.VisualStudio.NuPack.Forms
             var needPush = NeedPush();
             if (needPush && _optionsControl.PackArgs.NoBuild)
             {
-                //TODO:warn
+                var yes = _package.ShowQuestion("You are going to deploy the package with --nobuild,do you confirm?",
+                        "Warning");
+                if(!yes) return;
             }
             ActiveOutputWindow();
             OutputMessage("start packaging..." + Environment.NewLine);
@@ -122,8 +127,7 @@ namespace CnSharp.VisualStudio.NuPack.Forms
             SavePackageInfo();
             EnsureOutputDir();
             OutputMessage(Environment.NewLine + "Do packaging...");
-            if (!Pack())
-                return;
+            if (!Pack()) return;
             // ShowPackages();
             OutputMessage(Environment.NewLine + "Save project config.");
             SaveProjectConfig();
