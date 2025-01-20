@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Windows.Forms;
@@ -149,6 +148,7 @@ namespace CnSharp.VisualStudio.NuPack.Forms
         {
             LinkIcon();
             LinkReadme();
+            _project.Save();
             _metadataVM.SyncToPackageProjectProperties(_ppp);
             _project.SavePackageProjectProperties(_ppp);
         }
@@ -156,53 +156,55 @@ namespace CnSharp.VisualStudio.NuPack.Forms
         private void LinkIcon()
         {
             if (!_metadataVM.IconChanged) return;
-            var iconPath = _metadataVM.IconUrlString;
-            var absolutePath = ToAbsolutePath(iconPath);
-            if (!string.IsNullOrEmpty(absolutePath) && !File.Exists(absolutePath))
-                throw new FileNotFoundException($"File `{iconPath}` not found");
-            if (!string.IsNullOrWhiteSpace(_metadata.Icon) && !_metadata.Icon.StartsWith("http"))
-            {
-                //remove old icon
-                var oldIconItem = _project.ProjectItems.Item(_metadata.Icon);
-                if (oldIconItem != null)
-                {
-                    oldIconItem.Remove();
-                }
-            }
-            if (!string.IsNullOrEmpty(absolutePath))
-            {
-                var fileName = Path.GetFileName(absolutePath);
-                // Add the icon file as a link in the project
-                _project.AddFromFileAsLink(new List<string>(), fileName, absolutePath);
-                _metadataVM.Icon = fileName;
-            }
+            _metadataVM.Icon = AddOrUpdatePackFile(_metadataVM.IconUrlString, _metadata.Icon);
         }
 
         private void LinkReadme()
         {
             if (!_metadataVM.ReadmeChanged) return;
-            var readmeFile = _metadataVM.Readme;
-            var absolutePath = ToAbsolutePath(readmeFile);
-            if (!string.IsNullOrEmpty(absolutePath) && !File.Exists(absolutePath))
-                throw new FileNotFoundException($"File `{readmeFile}` not found");
-            if (!string.IsNullOrWhiteSpace(_metadata.Readme))
+            _metadataVM.Readme = AddOrUpdatePackFile(_metadataVM.Readme, _metadata.Readme);
+        }
+
+        private string AddOrUpdatePackFile(string filePath, string oldFile)
+        {
+            if (string.IsNullOrWhiteSpace(filePath))
             {
-                //remove old readme item
-                var oldReadmeItem = _project.ProjectItems.Item(_metadata.Readme);
-                if (oldReadmeItem != null)
+                return null;
+            }
+            var absolutePath = ToAbsolutePath(filePath);
+            if (!string.IsNullOrEmpty(absolutePath) && !File.Exists(absolutePath))
+                throw new FileNotFoundException($"File `{filePath}` not found");
+            if (!string.IsNullOrWhiteSpace(oldFile))
+            {
+                var oldFilePath = Path.Combine(_projectDir, oldFile);
+                if (oldFilePath == absolutePath)
                 {
-                    oldReadmeItem.Remove();
+                    //not changed
+                    return oldFile;
+                }
+                //remove old item
+                var oldItem = _project.ProjectItems.Item(oldFile);
+                if (oldItem != null)
+                {
+                    oldItem.Remove();
+                    if (File.Exists(oldFilePath))
+                        File.Delete(oldFilePath);
                 }
             }
-            if (!string.IsNullOrEmpty(absolutePath))
+           
+            var fileName = Path.GetFileName(absolutePath);
+            var existsItem = _project.ProjectItems.Item(fileName);
+            if (existsItem != null)
             {
-                var fileName = Path.GetFileName(absolutePath);
-
-                // Add the readme file as a link in the project
-                _project.AddFromFileAsLink(new List<string>(), fileName, absolutePath);
-                _metadataVM.Readme = fileName;
+                existsItem.Remove();
             }
+
+            var item = _project.ProjectItems.AddFromFile(absolutePath);
+            _project.SetItemAttribute(item, "Pack", true.ToString());
+            _project.SetItemAttribute(item, "PackagePath", "\\");
+            return fileName;
         }
+
 
         private string ToAbsolutePath(string path)
         {
@@ -212,6 +214,15 @@ namespace CnSharp.VisualStudio.NuPack.Forms
             }
             Directory.SetCurrentDirectory(Path.GetDirectoryName(_project.FileName));
             return Path.GetFullPath(path);
+        }
+
+
+        private string GetRelativePath(string path, string baseDir)
+        {
+            var uri = new Uri(path);
+            var exeUri = new Uri(baseDir);
+            var relativePath = exeUri.MakeRelativeUri(uri);
+            return relativePath.ToString();
         }
 
 
