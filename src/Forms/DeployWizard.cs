@@ -162,14 +162,11 @@ namespace CnSharp.VisualStudio.NuPack.Forms
                 throw new FileNotFoundException($"File `{iconPath}` not found");
             if (!string.IsNullOrWhiteSpace(_metadata.Icon) && !_metadata.Icon.StartsWith("http"))
             {
-                try
+                //remove old icon
+                var oldIconItem = _project.ProjectItems.Item(_metadata.Icon);
+                if (oldIconItem != null)
                 {
-                    //remove old icon
-                    _project.ProjectItems.Item(_metadata.Icon).Delete();
-                }
-                catch(Exception e)
-                {
-                    //ignored
+                    oldIconItem.Remove();
                 }
             }
             if (!string.IsNullOrEmpty(absolutePath))
@@ -190,14 +187,11 @@ namespace CnSharp.VisualStudio.NuPack.Forms
                 throw new FileNotFoundException($"File `{readmeFile}` not found");
             if (!string.IsNullOrWhiteSpace(_metadata.Readme))
             {
-                try
+                //remove old readme item
+                var oldReadmeItem = _project.ProjectItems.Item(_metadata.Readme);
+                if (oldReadmeItem != null)
                 {
-                    //remove old file
-                    _project.ProjectItems.Item(_metadata.Readme).Delete();
-                }
-                catch
-                {
-                    //ignored
+                    oldReadmeItem.Remove();
                 }
             }
             if (!string.IsNullOrEmpty(absolutePath))
