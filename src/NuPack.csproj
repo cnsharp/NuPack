@@ -122,9 +122,6 @@
     <Reference Include="System.Management" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
-    <Reference Include="VsSharp">
-      <HintPath>..\..\VS.Sharp\src\CnSharp.VisualStudio.Extensions\bin\Debug\net472\VsSharp.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="AeroWizard">
@@ -139,6 +136,9 @@
     <PackageReference Include="NuGet.Packaging">
       <Version>6.12.1</Version>
     </PackageReference>
+    <PackageReference Include="VsSharp">
+      <Version>17.0.2</Version>
+    </PackageReference>
   </ItemGroup>
   <ItemGroup>
     <VSCTCompile Include="NuPackPackage.vsct">
@@ -148,6 +148,14 @@
     </VSCTCompile>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="LICENSE.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="release_notes.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
     <Content Include="Resources\AssemblyInfoFile.png" />
     <Content Include="Resources\attribute.png" />
     <Content Include="Resources\Close.png" />
@@ -164,6 +172,10 @@
     <Content Include="Resources\PackageProperty.png" />
     <Content Include="Resources\reload32.png" />
     <Content Include="Resources\zip.ico" />
+    <Content Include="screenshots.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Forms\AssemblyInfoForm.resx">

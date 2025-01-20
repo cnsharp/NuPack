@@ -1,0 +1,112 @@
+﻿### V17.0 1/15/2025
+* Support VS2022
+* - Remove features for classic project.
+
+### V3.0 4/18/2019
+* Support VS2019.
+
+### V2.1.1 9/5/2018
+* A dependency bug fix.
+
+### V2.1.0 7/30/2018
+* Add  universal app platform (UAP) projects support.
+
+### V2.0.6 6/1/2018
+* Support nuget source path with spaces.
+[#21](https://github.com/cnsharp/nupack/issues/21)
+
+### V2.0.5 5/9/2018
+* Fix double slash bug in nuget push statement about .NET Standard/Core projects.
+[#19](https://github.com/cnsharp/nupack/issues/19)
+
+### V2.0.4 5/9/2018
+* Fix double slash bug in nuget push statement.
+[#19](https://github.com/cnsharp/nupack/issues/19)
+* Derived from AsyncPackage instead of Package to improve performance.
+
+### V2.0.3 5/7/2018
+* Refersh cache when adding/removing project
+
+### V2.0.2 5/3/2018
+* Restrict project types to .csproj/.vbproj/.fsproj,in case of some other types may make extension crash. 
+[#17](https://github.com/cnsharp/nupack/issues/17)
+* Fix the bug when Package Output directory is a network path.
+[#20](https://github.com/cnsharp/nupack/issues/20)
+
+### V2.0.1 4/23/2018
+* Add auto increment version number feature.
+
+### V2.0 4/21/2018
+* Add SDK-based project support by msbuild command.
+* Support CommonAssemblyInfo on classic projects.
+* Add Directory.Build.props to support common package info of  SDK-based projects,like company/authors/etc.
+
+### V1.6.3 1/11/2018
+* + add -ForceEnglishOutput option
+
+### V1.6.2 8/10/2017
+* Fix the bug of DevelopmentDependency property of Package. 
+[#7](https://github.com/cnsharp/nupack/issues/7)
+
+### V1.6.1 8/2/2017
+* NuGet V2 login support. 
+[#5](https://github.com/cnsharp/nupack/issues/5)
+
+### V1.6 7/22/2017
+[#1](https://github.com/cnsharp/nupack/issues/1)
+update CnSharp.VisualStudio.TFS package to 1.1.2 to include 'Microsoft.TeamFoundation.Common' dll.
+[#2](https://github.com/cnsharp/nupack/issues/2)
+support spaces in Nuget.exe path
+[#3](https://github.com/cnsharp/nupack/issues/3)
+support developmentDependency
+
+### V1.5.1 6/22/2017
+* + add -IncludeReferencedProjects option
+
+### V1.5 3/9/2017
+* + VS 2017 support.
+
+### V1.4.4 11/10/2016
+* Fix a bug when sync version to other .nuspec file in the solution.
+
+### V1.4.3 11/8/2016
+* Fix a bug of assembly info modification.
+
+### V1.4.2 10/27/2016
+* Dependency merge bug fix.
+
+### V1.4.1 10/20/2016
+* TFS check out bug fix(some .dll missed).
+
+### V1.4 8/4/2016
+* + Sync version to .nuspec file in solution projects which depend on it when a package's version has changed.
+* .nuspec merge bug fix when dependencies in multiple groups
+* Encode whitespaces in XML
+
+### V1.3.2 7/26/2016
+* + Add feature which supports to remember NuGet API key.
+
+### V1.3.1 7/20/2016
+* Fix a bug of merge dependency in separated groups.
+
+### V1.3 6/23/2016
+* + Add VB project support.
+
+### V1.2 6/4/2016
+* Improve deploy wizard.
+* Merge dependencies from packages.config automatically where .nuspec file created.
+
+### V1.1.1 5/24/2016
+* + Merge dependencies from packages.config into .nuspec automatically.
+* Improve replacement pattern for assemblyinfo.cs under multi language charset.
+
+### V1.1 5/17/2016
+* + Add nuspec dependency management.
+* + Add NuGet.exe path and output directory settings.
+* + Display NuGet command output message in Output Pane in VS.
+* Adjust context menu positions.
+* Some nuspec bug fixed.
+* Some assemblyinfo.cs replacement bug fixed.
+
+### V1.0 3/13/2016
+* + Initial version with basic features.
