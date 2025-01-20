@@ -150,9 +150,10 @@
   <ItemGroup>
     <Content Include="Resources\AssemblyInfoFile.png" />
     <Content Include="Resources\attribute.png" />
-    <Content Include="Resources\close32.png" />
+    <Content Include="Resources\Close.png" />
     <Content Include="Resources\exchange.png" />
     <Content Include="Resources\folder.png" />
+    <Content Include="Resources\HelpIndexFile.png" />
     <Content Include="Resources\loading32.gif" />
     <Content Include="Resources\logo.ico">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>

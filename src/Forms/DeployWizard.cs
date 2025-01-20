@@ -137,7 +137,7 @@ namespace CnSharp.VisualStudio.NuPack.Forms
                 OutputMessage(Environment.NewLine + "All Done!");
                 return;
             }
-            OutputMessage("Pushing nupkg..." + Environment.NewLine);
+            OutputMessage(Environment.NewLine+ "Pushing nupkg..." );
             var pushResult = Push();
             if (pushResult)
                 OutputMessage(Environment.NewLine + "All Done!");
