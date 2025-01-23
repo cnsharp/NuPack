@@ -86,7 +86,7 @@ namespace CnSharp.VisualStudio.NuPack.Util
                         }
                         else
                         {
-                            outputMessageHandler?.Invoke(e.Data);
+                            outputMessageHandler?.Invoke(e.Data + Environment.NewLine);
                         }
                     };
                     process.ErrorDataReceived += (sender, e) =>
@@ -97,7 +97,7 @@ namespace CnSharp.VisualStudio.NuPack.Util
                         }
                         else
                         {
-                            errorMessageHandler?.Invoke(e.Data);
+                            errorMessageHandler?.Invoke(e.Data + Environment.NewLine);
                         }
                     };
 
@@ -109,5 +109,6 @@ namespace CnSharp.VisualStudio.NuPack.Util
                 }
             }
         }
+
     }
 }
