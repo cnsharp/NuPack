@@ -4,7 +4,7 @@ Visual Studio extension for building and publishing NuGet packages.
 ### Features of NuPack 2022
 * It's a clean version just support SDK-based projects.Use dotnet CLI as default build tool instead of NuGet.exe.
 * Migrate package.nuspec to Package Properties.
-* DONOT keep source URLs or API keys any more, use the sources in NuGet.Config.
+* DONOT keep source URLs or API keys any more but symbols servers, use the sources in NuGet.Config as default.
 
 ### Screen shots
 ![Deploy context menu](https://raw.githubusercontent.com/cnsharp/nupack/master/screenshots/17.x/deploy_context_menu.png)
@@ -27,4 +27,3 @@ Visual Studio extension for building and publishing NuGet packages.
 
 ### Fork on Github
 [https://github.com/cnsharp/nupack](https://github.com/cnsharp/nupack)
- 
