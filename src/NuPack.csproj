@@ -15,7 +15,7 @@
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>CnSharp.VisualStudio.NuPack</RootNamespace>
-    <AssemblyName>nupack</AssemblyName>
+    <AssemblyName>NuPack</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <GeneratePkgDefFile>true</GeneratePkgDefFile>
     <UseCodebase>true</UseCodebase>

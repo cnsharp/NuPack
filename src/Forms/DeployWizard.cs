@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -307,9 +308,24 @@ namespace CnSharp.VisualStudio.NuPack.Forms
             var config = _optionsControl.Config;
             if (config.SymbolServers?.Any() == true)
             {
+                if (!string.IsNullOrWhiteSpace(_optionsControl.PushArgs.SymbolSource))
+                {
+                    config.SymbolServers.Add(_optionsControl.PushArgs.SymbolSource);
+                }
                 config.SymbolServers =
                     config.SymbolServers.Where(x => !string.IsNullOrWhiteSpace(x)).Distinct().ToList();
             }
+            else
+            {
+                if (!string.IsNullOrWhiteSpace(_optionsControl.PushArgs.SymbolSource))
+                {
+                    config.SymbolServers = new List<string>
+                    {
+                        _optionsControl.PushArgs.SymbolSource
+                    };
+                }
+            }
+
             new NuPackConfigHelper(_projectDir).Save(config);
         }
     }

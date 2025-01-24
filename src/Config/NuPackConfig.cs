@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using CnSharp.VisualStudio.Extensions.Util;
 using CnSharp.VisualStudio.NuPack.Models;
 
@@ -9,7 +8,7 @@ namespace CnSharp.VisualStudio.NuPack.Config
 {
     public class NuPackConfig
     {
-        public PackArgs PackArgs { get; set; } 
+        public PackArgs PackArgs { get; set; } = new PackArgs();
 
         public List<string> SymbolServers { get; set; } = new List<string>();
     }

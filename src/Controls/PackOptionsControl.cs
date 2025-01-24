@@ -116,7 +116,7 @@ namespace CnSharp.VisualStudio.NuPack.Controls
         private void EnableSymbolControls()
         {
             symbolServerBox.Enabled =
-                textBoxSymbolServerApiKey.Enabled = PackArgs.IncludeSymbols && !string.IsNullOrWhiteSpace(PushArgs.SymbolSource);
+                textBoxSymbolServerApiKey.Enabled = checkBoxIncludeSymbols.Checked && sourceBox.SelectedIndex > 0;
         }
     }
 }
