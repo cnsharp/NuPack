@@ -1,6 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
-using System.Security.AccessControl;
+using System.Linq;
 using CnSharp.VisualStudio.Extensions.Util;
 using CnSharp.VisualStudio.NuPack.Models;
 
@@ -9,17 +10,17 @@ namespace CnSharp.VisualStudio.NuPack.Config
     public class NuPackConfig
     {
         public PackArgs PackArgs { get; set; } 
+
+        public List<string> SymbolServers { get; set; } = new List<string>();
     }
 
     public class NuPackConfigHelper
     {
         private const string ConfigFileRelativePath = ".nupack\\config.xml";
-        private readonly string _projectDir;
         private string _configFilePath;
        
         public NuPackConfigHelper(string projectDir)
         {
-            _projectDir = projectDir;
             _configFilePath = Path.Combine(projectDir , ConfigFileRelativePath);
         }
 

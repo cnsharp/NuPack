@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using AeroWizard;
@@ -139,10 +140,9 @@ namespace CnSharp.VisualStudio.NuPack.Forms
             }
             OutputMessage(Environment.NewLine+ "Pushing nupkg..." );
             var pushResult = Push();
-            if (pushResult)
-                OutputMessage(Environment.NewLine + "All Done!");
+            if (!pushResult) return;
+            OutputMessage(Environment.NewLine + "All Done!");
         }
-
 
         private void SavePackageInfo()
         {
@@ -205,7 +205,6 @@ namespace CnSharp.VisualStudio.NuPack.Forms
             return fileName;
         }
 
-
         private string ToAbsolutePath(string path)
         {
             if (string.IsNullOrWhiteSpace(path) || path.Contains(":\\"))
@@ -216,7 +215,6 @@ namespace CnSharp.VisualStudio.NuPack.Forms
             return Path.GetFullPath(path);
         }
 
-
         private string GetRelativePath(string path, string baseDir)
         {
             var uri = new Uri(path);
@@ -224,7 +222,6 @@ namespace CnSharp.VisualStudio.NuPack.Forms
             var relativePath = exeUri.MakeRelativeUri(uri);
             return relativePath.ToString();
         }
-
 
         private bool Pack()
         {
@@ -277,9 +274,7 @@ namespace CnSharp.VisualStudio.NuPack.Forms
 
             if (!string.IsNullOrWhiteSpace(args.SymbolSource))
             {
-                script.AppendLine();
-                script.Append(
-                    $"nuget push \"{_outputDir}{_metadataVM.Id}.{_metadataVM.VersionString}.snupkg\" -ss \"{args.SymbolSource}\" ");
+                script.Append($" -ss \"{args.SymbolSource}\" ");
                 if (!string.IsNullOrWhiteSpace(args.SymbolApiKey))
                     script.Append($" -sk \"{args.SymbolApiKey}\"");
             }
@@ -290,14 +285,12 @@ namespace CnSharp.VisualStudio.NuPack.Forms
             return CmdUtil.RunDotnet(script.ToString(), OutputMessage, OutputMessage);
         }
 
-
         private void ShowPackages()
         {
             var pkg = $"{_outputDir}{_metadataVM.Id}.{_metadataVM.VersionString}.nupkg";
             if (File.Exists(pkg)) 
                 Process.Start("explorer.exe", $"/select,\"{pkg}\"");
         }
-
 
         private void EnsureOutputDir()
         {
@@ -311,10 +304,12 @@ namespace CnSharp.VisualStudio.NuPack.Forms
 
         private void SaveProjectConfig()
         {
-            var config = new NuPackConfig
+            var config = _optionsControl.Config;
+            if (config.SymbolServers?.Any() == true)
             {
-                PackArgs = _optionsControl.PackArgs
-            };
+                config.SymbolServers =
+                    config.SymbolServers.Where(x => !string.IsNullOrWhiteSpace(x)).Distinct().ToList();
+            }
             new NuPackConfigHelper(_projectDir).Save(config);
         }
     }

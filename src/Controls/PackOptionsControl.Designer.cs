@@ -39,13 +39,13 @@
             this.sourceBox = new System.Windows.Forms.ComboBox();
             this.label2 = new System.Windows.Forms.Label();
             this.textBoxApiKey = new System.Windows.Forms.TextBox();
-            this.textBoxSymbolServer = new System.Windows.Forms.TextBox();
             this.label5 = new System.Windows.Forms.Label();
             this.textBoxSymbolServerApiKey = new System.Windows.Forms.TextBox();
             this.label3 = new System.Windows.Forms.Label();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.checkBoxNoBuild = new System.Windows.Forms.CheckBox();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.symbolServerBox = new System.Windows.Forms.ComboBox();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.SuspendLayout();
@@ -76,7 +76,7 @@
             this.btnOpenOutputDir.Location = new System.Drawing.Point(675, 53);
             this.btnOpenOutputDir.Name = "btnOpenOutputDir";
             this.btnOpenOutputDir.Size = new System.Drawing.Size(23, 23);
-            this.btnOpenOutputDir.TabIndex = 20;
+            this.btnOpenOutputDir.TabIndex = 1;
             this.btnOpenOutputDir.UseVisualStyleBackColor = true;
             this.btnOpenOutputDir.Click += new System.EventHandler(this.btnOpenOutputDir_Click);
             // 
@@ -86,9 +86,10 @@
             this.checkBoxIncludeSymbols.Location = new System.Drawing.Point(132, 90);
             this.checkBoxIncludeSymbols.Name = "checkBoxIncludeSymbols";
             this.checkBoxIncludeSymbols.Size = new System.Drawing.Size(126, 16);
-            this.checkBoxIncludeSymbols.TabIndex = 1;
+            this.checkBoxIncludeSymbols.TabIndex = 2;
             this.checkBoxIncludeSymbols.Text = "--include-symbols";
             this.checkBoxIncludeSymbols.UseVisualStyleBackColor = true;
+            this.checkBoxIncludeSymbols.CheckedChanged += new System.EventHandler(this.checkBoxIncludeSymbols_CheckedChanged);
             // 
             // checkBoxIncludeSource
             // 
@@ -96,7 +97,7 @@
             this.checkBoxIncludeSource.Location = new System.Drawing.Point(308, 90);
             this.checkBoxIncludeSource.Name = "checkBoxIncludeSource";
             this.checkBoxIncludeSource.Size = new System.Drawing.Size(120, 16);
-            this.checkBoxIncludeSource.TabIndex = 2;
+            this.checkBoxIncludeSource.TabIndex = 3;
             this.checkBoxIncludeSource.Text = "--include-source";
             this.checkBoxIncludeSource.UseVisualStyleBackColor = true;
             // 
@@ -106,7 +107,7 @@
             this.checkBoxNoDependencies.Location = new System.Drawing.Point(308, 118);
             this.checkBoxNoDependencies.Name = "checkBoxNoDependencies";
             this.checkBoxNoDependencies.Size = new System.Drawing.Size(126, 16);
-            this.checkBoxNoDependencies.TabIndex = 4;
+            this.checkBoxNoDependencies.TabIndex = 5;
             this.checkBoxNoDependencies.Text = "--no-dependencies";
             this.checkBoxNoDependencies.UseVisualStyleBackColor = true;
             // 
@@ -126,7 +127,8 @@
             this.sourceBox.Location = new System.Drawing.Point(132, 36);
             this.sourceBox.Name = "sourceBox";
             this.sourceBox.Size = new System.Drawing.Size(559, 20);
-            this.sourceBox.TabIndex = 99;
+            this.sourceBox.TabIndex = 0;
+            this.sourceBox.SelectedIndexChanged += new System.EventHandler(this.sourceBox_SelectedIndexChanged);
             // 
             // label2
             // 
@@ -142,14 +144,7 @@
             this.textBoxApiKey.Location = new System.Drawing.Point(132, 72);
             this.textBoxApiKey.Name = "textBoxApiKey";
             this.textBoxApiKey.Size = new System.Drawing.Size(559, 21);
-            this.textBoxApiKey.TabIndex = 100;
-            // 
-            // textBoxSymbolServer
-            // 
-            this.textBoxSymbolServer.Location = new System.Drawing.Point(132, 114);
-            this.textBoxSymbolServer.Name = "textBoxSymbolServer";
-            this.textBoxSymbolServer.Size = new System.Drawing.Size(559, 21);
-            this.textBoxSymbolServer.TabIndex = 102;
+            this.textBoxApiKey.TabIndex = 1;
             // 
             // label5
             // 
@@ -165,7 +160,7 @@
             this.textBoxSymbolServerApiKey.Location = new System.Drawing.Point(132, 153);
             this.textBoxSymbolServerApiKey.Name = "textBoxSymbolServerApiKey";
             this.textBoxSymbolServerApiKey.Size = new System.Drawing.Size(559, 21);
-            this.textBoxSymbolServerApiKey.TabIndex = 105;
+            this.textBoxSymbolServerApiKey.TabIndex = 3;
             // 
             // label3
             // 
@@ -199,19 +194,19 @@
             this.checkBoxNoBuild.Location = new System.Drawing.Point(132, 118);
             this.checkBoxNoBuild.Name = "checkBoxNoBuild";
             this.checkBoxNoBuild.Size = new System.Drawing.Size(84, 16);
-            this.checkBoxNoBuild.TabIndex = 3;
+            this.checkBoxNoBuild.TabIndex = 4;
             this.checkBoxNoBuild.Text = "--no-build";
             this.checkBoxNoBuild.UseVisualStyleBackColor = true;
             // 
             // groupBox2
             // 
+            this.groupBox2.Controls.Add(this.symbolServerBox);
             this.groupBox2.Controls.Add(this.sourceBox);
             this.groupBox2.Controls.Add(this.label1);
             this.groupBox2.Controls.Add(this.label3);
             this.groupBox2.Controls.Add(this.textBoxApiKey);
             this.groupBox2.Controls.Add(this.textBoxSymbolServerApiKey);
             this.groupBox2.Controls.Add(this.label2);
-            this.groupBox2.Controls.Add(this.textBoxSymbolServer);
             this.groupBox2.Controls.Add(this.label5);
             this.groupBox2.Dock = System.Windows.Forms.DockStyle.Fill;
             this.groupBox2.Location = new System.Drawing.Point(0, 151);
@@ -220,6 +215,14 @@
             this.groupBox2.TabIndex = 108;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Deploy Options";
+            // 
+            // symbolServerBox
+            // 
+            this.symbolServerBox.FormattingEnabled = true;
+            this.symbolServerBox.Location = new System.Drawing.Point(132, 114);
+            this.symbolServerBox.Name = "symbolServerBox";
+            this.symbolServerBox.Size = new System.Drawing.Size(559, 20);
+            this.symbolServerBox.TabIndex = 2;
             // 
             // PackOptionsControl
             // 
@@ -251,12 +254,12 @@
         private System.Windows.Forms.ComboBox sourceBox;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.TextBox textBoxApiKey;
-        private System.Windows.Forms.TextBox textBoxSymbolServer;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.TextBox textBoxSymbolServerApiKey;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.GroupBox groupBox2;
         private System.Windows.Forms.CheckBox checkBoxNoBuild;
+        private System.Windows.Forms.ComboBox symbolServerBox;
     }
 }
