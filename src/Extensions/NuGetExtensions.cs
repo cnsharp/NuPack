@@ -174,9 +174,9 @@ namespace CnSharp.VisualStudio.NuPack.Extensions
             var meta = new ManifestMetadata
             {
                 Id = ppp.PackageId,
-                Authors = ppp.Authors.Split(','),
+                Authors = ppp.Authors?.Split(','),
                 Copyright = ppp.Copyright,
-                Owners = ppp.Company.Split(','),
+                Owners = ppp.Company?.Split(','),
                 Description = ppp.Description,
                 Icon = ppp.PackageIcon,
                 Language = ppp.NeutralLanguage,
@@ -184,7 +184,7 @@ namespace CnSharp.VisualStudio.NuPack.Extensions
                 ReleaseNotes = ppp.PackageReleaseNotes,
                 RequireLicenseAcceptance = ppp.PackageRequireLicenseAcceptance,
                 Tags = ppp.PackageTags,
-                Version = new NuGetVersion(ppp.Version)
+                Version = !string.IsNullOrEmpty(ppp.Version) ? new NuGetVersion(ppp.Version) : new NuGetVersion("1.0.0")
             };
 
             if (!string.IsNullOrWhiteSpace(ppp.RepositoryUrl))

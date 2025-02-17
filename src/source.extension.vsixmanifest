@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
     <Metadata>
-        <Identity Id="nupack2022.d2452476-22fd-4075-a2bf-bd967e65abdc" Version="17.0.1" Language="en-US" Publisher="CnSharp Studio" />
+        <Identity Id="nupack2022.d2452476-22fd-4075-a2bf-bd967e65abdc" Version="17.0.3" Language="en-US" Publisher="CnSharp Studio" />
         <DisplayName>NuPack 2022</DisplayName>
         <Description xml:space="preserve">A wizard for building and deploying NuGet packages.</Description>
         <MoreInfo>http://www.cnsharp.com</MoreInfo>
@@ -21,6 +21,15 @@
         </InstallationTarget>
         <InstallationTarget Version="[17.0,18.0)" Id="Microsoft.VisualStudio.Enterprise">
             <ProductArchitecture>amd64</ProductArchitecture>
+        </InstallationTarget>
+        <InstallationTarget Version="[17.0,18.0)" Id="Microsoft.VisualStudio.Community">
+            <ProductArchitecture>arm64</ProductArchitecture>
+        </InstallationTarget>
+        <InstallationTarget Version="[17.0,18.0)" Id="Microsoft.VisualStudio.Pro">
+            <ProductArchitecture>arm64</ProductArchitecture>
+        </InstallationTarget>
+        <InstallationTarget Version="[17.0,18.0)" Id="Microsoft.VisualStudio.Enterprise">
+            <ProductArchitecture>arm64</ProductArchitecture>
         </InstallationTarget>
     </Installation>
     <Dependencies>

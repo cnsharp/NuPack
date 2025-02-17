@@ -1,6 +1,13 @@
-﻿### V17.0 1/15/2025
+﻿### V17.0.3 2/17/2025
+* Fix a NullReferenceException bug when the project has no package info.
+[#33](https://github.com/cnsharp/NuPack/issues/33)
+
+### V17.0.2 2/14/2025
+* Add install target for architecture arm64.
+
+### V17.0 1/15/2025
 * Support VS2022
-* - Remove features for classic project.
+* Remove features for classic projects.
 
 ### V3.0 4/18/2019
 * Support VS2019.
@@ -42,7 +49,7 @@
 * Add Directory.Build.props to support common package info of  SDK-based projects,like company/authors/etc.
 
 ### V1.6.3 1/11/2018
-* + add -ForceEnglishOutput option
+* add -ForceEnglishOutput option
 
 ### V1.6.2 8/10/2017
 * Fix the bug of DevelopmentDependency property of Package. 
@@ -61,10 +68,10 @@ support spaces in Nuget.exe path
 support developmentDependency
 
 ### V1.5.1 6/22/2017
-* + add -IncludeReferencedProjects option
+* add -IncludeReferencedProjects option
 
 ### V1.5 3/9/2017
-* + VS 2017 support.
+* VS 2017 support.
 
 ### V1.4.4 11/10/2016
 * Fix a bug when sync version to other .nuspec file in the solution.
@@ -79,34 +86,34 @@ support developmentDependency
 * TFS check out bug fix(some .dll missed).
 
 ### V1.4 8/4/2016
-* + Sync version to .nuspec file in solution projects which depend on it when a package's version has changed.
+* Sync version to .nuspec file in solution projects which depend on it when a package's version has changed.
 * .nuspec merge bug fix when dependencies in multiple groups
 * Encode whitespaces in XML
 
 ### V1.3.2 7/26/2016
-* + Add feature which supports to remember NuGet API key.
+* Add feature which supports to remember NuGet API key.
 
 ### V1.3.1 7/20/2016
 * Fix a bug of merge dependency in separated groups.
 
 ### V1.3 6/23/2016
-* + Add VB project support.
+* Add VB project support.
 
 ### V1.2 6/4/2016
 * Improve deploy wizard.
 * Merge dependencies from packages.config automatically where .nuspec file created.
 
 ### V1.1.1 5/24/2016
-* + Merge dependencies from packages.config into .nuspec automatically.
+* Merge dependencies from packages.config into .nuspec automatically.
 * Improve replacement pattern for assemblyinfo.cs under multi language charset.
 
 ### V1.1 5/17/2016
-* + Add nuspec dependency management.
-* + Add NuGet.exe path and output directory settings.
-* + Display NuGet command output message in Output Pane in VS.
+* Add nuspec dependency management.
+* Add NuGet.exe path and output directory settings.
+* Display NuGet command output message in Output Pane in VS.
 * Adjust context menu positions.
 * Some nuspec bug fixed.
 * Some assemblyinfo.cs replacement bug fixed.
 
 ### V1.0 3/13/2016
-* + Initial version with basic features.
+* Initial version with basic features.

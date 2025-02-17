@@ -64,6 +64,7 @@ namespace CnSharp.VisualStudio.NuPack.Forms
             _package = package;
             var project = dte.GetActiveProject();
             _ppp = project.GetPackageProjectProperties();
+            InitProjectPackageInfo(_ppp, project);
             _metadata = _ppp.ToManifestMetadata();
             _metadataVM = new ManifestMetadataViewModel(_metadata);
             _slnDir = Path.GetDirectoryName(dte.Solution.FileName);
@@ -72,6 +73,14 @@ namespace CnSharp.VisualStudio.NuPack.Forms
             _projectDir = _project.GetDirectory();
             var releaseDir = Path.Combine(_projectDir, "bin", "Release");
             _optionsControl.LoadConfig(_projectDir, releaseDir);
+        }
+
+        private void InitProjectPackageInfo(PackageProjectProperties ppp, Project project)
+        {
+            if (ppp.PackageId == null)
+                ppp.PackageId = project.Name;
+            if (ppp.Version == null)
+                ppp.Version = "1.0.0";
         }
 
         private void BindSources()
