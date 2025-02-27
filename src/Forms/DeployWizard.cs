@@ -71,8 +71,8 @@ namespace CnSharp.VisualStudio.NuPack.Forms
             _project = _dte.GetActiveProject();
             _metadataControl.Project = _project;
             _projectDir = _project.GetDirectory();
-            var releaseDir = Path.Combine(_projectDir, "bin", "Release");
-            _optionsControl.LoadConfig(_projectDir, releaseDir);
+            var outputDir = Path.Combine(_projectDir, "bin", Common.ProductName);
+            _optionsControl.LoadConfig(_projectDir, outputDir);
         }
 
         private void InitProjectPackageInfo(PackageProjectProperties ppp, Project project)
@@ -132,10 +132,16 @@ namespace CnSharp.VisualStudio.NuPack.Forms
                 if(!yes) return;
             }
             ActiveOutputWindow();
-            OutputMessage("start packaging..." + Environment.NewLine);
+            OutputMessage("start..." + Environment.NewLine);
             OutputMessage(Environment.NewLine + "Save package info to project.");
             SavePackageInfo();
             EnsureOutputDir();
+            if (!_optionsControl.PackArgs.NoBuild)
+            {
+                OutputMessage(Environment.NewLine + "Building...");
+                if (!Host.Instance.Solution2.BuildRelease())
+                    return;
+            }
             OutputMessage(Environment.NewLine + "Do packaging...");
             if (!Pack()) return;
             // ShowPackages();
