@@ -10,5 +10,5 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTrademark("NuPack")]
 [assembly: AssemblyCulture("")]
 [assembly: ComVisible(false)]
-[assembly: AssemblyVersion("17.0.4.0")]
-[assembly: AssemblyFileVersion("17.0.4.0")]
+[assembly: AssemblyVersion("17.0.5.0")]
+[assembly: AssemblyFileVersion("17.0.5.0")]

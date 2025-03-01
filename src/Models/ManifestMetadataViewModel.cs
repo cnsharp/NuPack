@@ -60,7 +60,7 @@ namespace CnSharp.VisualStudio.NuPack.Models
         public string OwnersString
         {
             get => Owners != null ? string.Join(",", Owners) : string.Empty;
-            set => Authors = value.Split(',').ToList();
+            set => Owners = value.Split(',').ToList();
         }
 
 
