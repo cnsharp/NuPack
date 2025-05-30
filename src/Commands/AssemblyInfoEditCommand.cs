@@ -4,25 +4,26 @@ using System.Linq;
 using CnSharp.VisualStudio.Extensions;
 using CnSharp.VisualStudio.NuPack.Extensions;
 using CnSharp.VisualStudio.NuPack.Forms;
+using CnSharp.VisualStudio.NuPack.Util;
 using Microsoft.VisualStudio.Shell;
 using Task = System.Threading.Tasks.Task;
 
 namespace CnSharp.VisualStudio.NuPack.Commands
 {
     /// <summary>
-    /// Command handler
+    /// Command handler for AssemblyInfo file editing
     /// </summary>
     internal sealed class AssemblyInfoEditCommand
     {
         /// <summary>
         /// Command ID.
         /// </summary>
-        public const int CommandId = 0x0100;
+        public const int CommandId = PackageIds.cmdidAssemblyInfoEditCommand;
 
         /// <summary>
         /// Command menu group (command set GUID).
         /// </summary>
-        public static readonly Guid CommandSet = new Guid("2dff605d-c360-4f36-9f5e-1b117fcd71f4");
+        public static readonly Guid CommandSet = PackageGuids.guidAssemblyInfoEditPackageCmdSet;
 
         /// <summary>
         /// VS Package that provides this command, not null.
@@ -41,8 +42,17 @@ namespace CnSharp.VisualStudio.NuPack.Commands
             commandService = commandService ?? throw new ArgumentNullException(nameof(commandService));
 
             var menuCommandID = new CommandID(CommandSet, CommandId);
-            var menuItem = new MenuCommand(Execute, menuCommandID);
+            var menuItem = new OleMenuCommand(Execute, menuCommandID);
+            menuItem.BeforeQueryStatus += MenuItemOnBeforeQueryStatus;
             commandService.AddCommand(menuItem);
+        }
+
+        private void MenuItemOnBeforeQueryStatus(object sender, EventArgs e)
+        {
+            var dte = Host.Instance.Dte2;
+            if (dte == null) return;
+            var cmd = (OleMenuCommand)sender;
+            cmd.Visible = SolutionDataCache.Instance.GetSolutionProperties(dte.Solution.FileName).Projects.Any(p => p.HasAssemblyInfo());
         }
 
         /// <summary>
@@ -97,21 +107,21 @@ namespace CnSharp.VisualStudio.NuPack.Commands
                 var allProjects = sp.Projects;
                 if (!allProjects.Any())
                 {
-                    package.ShowError("No project is opening.", Common.ProductName);
+                    MessageBoxHelper.ShowErrorMessageBox("No project is opening.");
                     return;
                 }
 
                 var projectsWithAssemblyInfo = allProjects.Where(p => p.HasAssemblyInfo()).ToList();
                 if (!projectsWithAssemblyInfo.Any())
                 {
-                    package.ShowError("No project with AssemblyInfo found.", Common.ProductName);
+                    MessageBoxHelper.ShowErrorMessageBox("No project with AssemblyInfo found.");
                     return;
                 }
                 new AssemblyInfoForm(projectsWithAssemblyInfo).ShowDialog();
             }
             catch (Exception exception)
             {
-                package.ShowError(exception.Message, Common.ProductName);
+                MessageBoxHelper.ShowErrorMessageBox(exception.Message);
             }
         }
     }

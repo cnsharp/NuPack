@@ -32,7 +32,7 @@ namespace CnSharp.VisualStudio.NuPack.Controls
             MakeTextBoxRequired(textBoxId);
             MakeTextBoxRequired(textBoxDescription);
             MakeTextBoxRequired(textBoxAuthors);
-            MakeTextBoxRequired(textBoxOwners);
+            MakeTextBoxRequired(textBoxTitle);
             MakeTextBoxRequired(textBoxVersion);
             MakeTextBoxRequired(textBoxReleaseNotes);
 

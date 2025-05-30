@@ -11,8 +11,11 @@ namespace CnSharp.VisualStudio.NuPack.Controls
 {
     public partial class PackOptionsControl : UserControl
     {
+        private bool _sdkBased;
         private List<NuGetSource> _sources;
         private List<string> _symbolServers = new List<string>();
+        private DotnetPackOptionsControl _dotnetPackOptionsControl;
+        private NuGetPackOptionsControl _nuGetPackOptionsControl;
 
         public PackOptionsControl()
         {
@@ -38,6 +41,46 @@ namespace CnSharp.VisualStudio.NuPack.Controls
 
         public ErrorProvider ErrorProvider { get; set; }
 
+        public bool SdkBased
+        {
+            set
+            {
+                _sdkBased = value;
+                SetPackArgsControls();
+            }
+        }
+
+        private void SetPackArgsControls()
+        {
+            panelPackOptions.Controls.Clear();
+            if (_sdkBased)
+            {
+                _dotnetPackOptionsControl = new DotnetPackOptionsControl();
+                _dotnetPackOptionsControl.PackArgs = PackArgs;
+                _dotnetPackOptionsControl.SymbolsCheckedChanged += (sender, e) =>
+                {
+                    var checkBox = sender as CheckBox;
+                    PackArgs.IncludeSymbols = checkBox?.Checked == true;
+                    EnableSymbolControls();
+                };
+                _dotnetPackOptionsControl.Dock = DockStyle.Fill;
+                panelPackOptions.Controls.Add(_dotnetPackOptionsControl);
+            }
+            else
+            {
+                _nuGetPackOptionsControl = new NuGetPackOptionsControl();
+                _nuGetPackOptionsControl.PackArgs = PackArgs;
+                _nuGetPackOptionsControl.SymbolsCheckedChanged += (sender, e) =>
+                {
+                    var checkBox = sender as CheckBox;
+                    PackArgs.IncludeSymbols = checkBox?.Checked == true;
+                    EnableSymbolControls();
+                };
+                _nuGetPackOptionsControl.Dock = DockStyle.Fill;
+                panelPackOptions.Controls.Add(_nuGetPackOptionsControl);
+            }
+        }
+
         public void LoadConfig(string projectDir, string outputDir)
         {
             Config = new NuPackConfigHelper(projectDir).Read() ?? new NuPackConfig();
@@ -53,10 +96,7 @@ namespace CnSharp.VisualStudio.NuPack.Controls
         private void BindingPackArgs()
         {
             textBoxOutputDir.DataBindings.Add("Text", PackArgs, "OutputDirectory");
-            checkBoxIncludeSymbols.DataBindings.Add("Checked", PackArgs, "IncludeSymbols");
-            checkBoxIncludeSource.DataBindings.Add("Checked", PackArgs, "IncludeSource");
-            checkBoxNoBuild.DataBindings.Add("Checked", PackArgs, "NoBuild");
-            checkBoxNoDependencies.DataBindings.Add("Checked", PackArgs, "NoDependencies");
+            
         }
 
         private void BindingSources()
@@ -103,11 +143,6 @@ namespace CnSharp.VisualStudio.NuPack.Controls
             ErrorProvider.SetError(textBoxOutputDir, null);
         }
 
-        private void checkBoxIncludeSymbols_CheckedChanged(object sender, EventArgs e)
-        {
-            EnableSymbolControls();
-        }
-
         private void sourceBox_SelectedIndexChanged(object sender, EventArgs e)
         {
             EnableSymbolControls();
@@ -116,7 +151,8 @@ namespace CnSharp.VisualStudio.NuPack.Controls
         private void EnableSymbolControls()
         {
             symbolServerBox.Enabled =
-                textBoxSymbolServerApiKey.Enabled = checkBoxIncludeSymbols.Checked && sourceBox.SelectedIndex > 0;
+                textBoxSymbolServerApiKey.Enabled = PackArgs.IncludeSymbols && sourceBox.SelectedIndex > 0;
         }
+
     }
 }

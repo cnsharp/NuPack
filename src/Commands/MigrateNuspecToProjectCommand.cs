@@ -1,15 +1,17 @@
-﻿using System;
-using System.ComponentModel.Design;
-using System.IO;
-using CnSharp.VisualStudio.Extensions;
+﻿using CnSharp.VisualStudio.Extensions;
 using CnSharp.VisualStudio.NuPack.Extensions;
+using CnSharp.VisualStudio.NuPack.Util;
 using Microsoft.VisualStudio.Shell;
+using Microsoft.VisualStudio.Shell.Interop;
+using System;
+using System.ComponentModel.Design;
+using System.Runtime.InteropServices;
 using Task = System.Threading.Tasks.Task;
 
 namespace CnSharp.VisualStudio.NuPack.Commands
 {
     /// <summary>
-    /// Command handler
+    /// Command handler for migrating .nuspec file to Project PropertyGroup
     /// </summary>
     internal sealed class MigrateNuspecToProjectCommand
     {
@@ -91,8 +93,9 @@ namespace CnSharp.VisualStudio.NuPack.Commands
         {
             var dte = Host.Instance.Dte2;
             var project = dte.GetActiveProject();
-            var nuspecFile = project.GetNuSpecFilePath();
-            if (!File.Exists(nuspecFile))
+            //var nuspecFile = GetNuspecFile(project);
+            var nuspecFile = GetFilePathFromRightClick() as string;
+            if (nuspecFile == null)
             {
                 return;
             }
@@ -101,7 +104,21 @@ namespace CnSharp.VisualStudio.NuPack.Commands
             var ppp = project.GetPackageProjectProperties();
             metadata.SyncToPackageProjectProperties(ppp);
             project.SavePackageProjectProperties(ppp);
-            package.ShowInfo("Migration completed.Please review the project file and then you can remove the .nuspec file manually later.",Common.ProductName);
+            MessageBoxHelper.ShowMessageBox("Migration completed.Please review the project file and then you can remove the .nuspec file manually later.");
+        }
+
+        private static string GetFilePathFromRightClick()
+        {
+            IntPtr hierarchyPtr, selectionContainerPtr;
+            uint projectItemId;
+            IVsMultiItemSelect mis;
+            var monitorSelection = (IVsMonitorSelection)Package.GetGlobalService(typeof(SVsShellMonitorSelection));
+            monitorSelection.GetCurrentSelection(out hierarchyPtr, out projectItemId, out mis, out selectionContainerPtr);
+            var hierarchy = Marshal.GetTypedObjectForIUnknown(hierarchyPtr, typeof(IVsHierarchy)) as IVsHierarchy;
+            if (hierarchy == null) return null;
+            // hierarchy.GetProperty(projectItemId, (int)__VSHPROPID.VSHPROPID_Name, out var fileName); // This returns the file name
+            hierarchy.GetCanonicalName(projectItemId, out string path);
+            return path;
         }
     }
 }

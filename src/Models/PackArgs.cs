@@ -12,5 +12,7 @@
 
         public bool NoBuild { get; set; }
         public bool NoDependencies { get; set; }
+
+        public bool IncludeReferencedProjects { get; set; }
     }
 }

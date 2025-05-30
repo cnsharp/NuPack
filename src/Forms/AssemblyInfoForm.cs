@@ -7,7 +7,7 @@ using System.Linq;
 using System.Windows.Forms;
 using CnSharp.VisualStudio.Extensions;
 using CnSharp.VisualStudio.Extensions.Projects;
-using CnSharp.VisualStudio.NuPack.Extensions;
+using CnSharp.VisualStudio.NuPack.Util;
 using EnvDTE;
 
 namespace CnSharp.VisualStudio.NuPack.Forms
@@ -263,19 +263,19 @@ namespace CnSharp.VisualStudio.NuPack.Forms
             {
                 if (string.IsNullOrWhiteSpace(_commonInfo.Company))
                 {
-                    ServiceProvider.ShowError("Company required.",Common.ProductName);
+                    MessageBoxHelper.ShowErrorMessageBox("Company required.");
                     txtCompany.Focus();
                     return;
                 }
                 if (string.IsNullOrWhiteSpace(_commonInfo.Product))
                 {
-                    ServiceProvider.ShowError("Product required.", Common.ProductName);
+                    MessageBoxHelper.ShowErrorMessageBox("Product required.");
                     txtProduct.Focus();
                     return;
                 }
                 if (string.IsNullOrWhiteSpace(_commonInfo.Copyright))
                 {
-                    ServiceProvider.ShowError("Copyright required.", Common.ProductName);
+                    MessageBoxHelper.ShowErrorMessageBox("Copyright required.");
                     txtCopyright.Focus();
                     return;
                 }

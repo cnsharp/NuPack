@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
     <Metadata>
-        <Identity Id="nupack2022.d2452476-22fd-4075-a2bf-bd967e65abdc" Version="17.0.5" Language="en-US" Publisher="CnSharp Studio" />
+        <Identity Id="nupack2022.d2452476-22fd-4075-a2bf-bd967e65abdc" Version="17.1.0" Language="en-US" Publisher="CnSharp Studio" />
         <DisplayName>NuPack 2022</DisplayName>
         <Description xml:space="preserve">A wizard for building and deploying NuGet packages.</Description>
-        <MoreInfo>http://www.cnsharp.com</MoreInfo>
+        <MoreInfo>https://www.cnsharp.com</MoreInfo>
         <License>LICENSE.txt</License>
         <ReleaseNotes>release_notes.txt</ReleaseNotes>
         <Icon>Resources\logo.ico</Icon>

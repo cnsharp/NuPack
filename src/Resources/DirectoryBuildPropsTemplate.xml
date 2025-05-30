@@ -1,0 +1,23 @@
+﻿<Project>
+  <PropertyGroup>
+    <Authors>$author$</Authors>
+    <Company>$company$</Company>
+    <Copyright>copyright © $([System.DateTime]::Now.Year) $company$</Copyright>
+    <Description></Description>
+    <LangVersion></LangVersion>
+    <NeutralLanguage></NeutralLanguage>
+    <!-- <PackageIcon>icon.png</PackageIcon> -->
+    <PackageLicenseExpression></PackageLicenseExpression>
+    <!-- <PackageProjectUrl></PackageProjectUrl> -->
+    <PackageTags></PackageTags>
+    <Product>$product$</Product>
+    <!--
+    <RepositoryType></RepositoryType>
+    <RepositoryUrl></RepositoryUrl>
+-->
+    <Version></Version>
+  </PropertyGroup>
+  <ItemGroup>
+    <!-- <None Include="../assets/icon.png" Pack="true" PackagePath=""  Link="icon.png" /> -->
+  </ItemGroup>
+</Project>

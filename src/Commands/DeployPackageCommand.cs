@@ -1,15 +1,18 @@
 ﻿using System;
 using System.ComponentModel.Design;
+using System.IO;
 using System.Windows.Forms;
 using CnSharp.VisualStudio.Extensions;
+using CnSharp.VisualStudio.NuPack.Extensions;
 using CnSharp.VisualStudio.NuPack.Forms;
+using CnSharp.VisualStudio.NuPack.Util;
 using Microsoft.VisualStudio.Shell;
 using Task = System.Threading.Tasks.Task;
 
 namespace CnSharp.VisualStudio.NuPack.Commands
 {
     /// <summary>
-    /// Command handler
+    /// Command handler for build or/and deploy NuGet package
     /// </summary>
     internal sealed class DeployPackageCommand
     {
@@ -90,9 +93,21 @@ namespace CnSharp.VisualStudio.NuPack.Commands
             ThreadHelper.ThrowIfNotOnUIThread();
 
             var dte = Host.Instance.Dte2;
-            var form = new DeployWizard(dte, package);
+            var project = dte.GetActiveProject();
+            if (!project.IsSdkBased())
+            {
+                var nuspecFile = project.GetNuspecFilePath();
+                if (!File.Exists(nuspecFile))
+                {
+                    var dr = MessageBoxHelper.ShowQuestionMessageBox($"Missing nuspec file:{project.Name}.nuspec,would you add it now?");
+                    if (dr != DialogResult.Yes)
+                        return;
+                    new AddNuSpecCommand().Execute();
+                }
+            }
+            var form = new DeployWizard(dte);
             form.StartPosition = FormStartPosition.CenterScreen;
-            if(form.ShowDialog() == DialogResult.OK)
+            if (form.ShowDialog() == DialogResult.OK)
                 form.SaveAndBuild();
         }
     }

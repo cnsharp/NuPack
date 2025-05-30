@@ -8,11 +8,17 @@
 
   <Commands package="guidNuPackPackage">
     <Groups>
-      <!-- <Group guid="guidNuPackPackageCmdSet" id="MyMenuGroup" priority="0x0600"> -->
-      <!--   <Parent guid="guidSHLMainMenu" id="IDM_VS_CTXT_SOLNNODE" /> -->
-      <!-- </Group> -->
+      <Group guid="guidAddDirectoryBuildPropsPackageCmdSet" id="SolutionAddGroup" priority="0x0600">
+        <Parent guid="guidSHLMainMenu" id="IDM_VS_CSCD_SOLUTION_ADD"/>
+      </Group>
+      <Group guid="guidAssemblyInfoEditPackageCmdSet" id="SolutionGroup" priority="0x0600">
+        <Parent guid="guidSHLMainMenu" id="IDM_VS_CTXT_SOLNNODE"/>
+      </Group>
       <Group guid="guidDeployPackageCmdSet" id="DeployMenuGroup" priority="0x0600">
         <Parent guid="guidSHLMainMenu" id="IDM_VS_CTXT_PROJNODE" />
+      </Group>
+      <Group guid="guidAddNuSpecPackageCmdSet" id="ProjectAddGroup" priority="0x0600">
+        <Parent guid="guidSHLMainMenu" id="IDM_VS_CSCD_PROJECT_ADD"/>
       </Group>
       <Group guid="guidMigrateNuspecToProjectCmdSet" id="MigrateNuspecMenuGroup" priority="0x0600">
         <Parent guid="guidSHLMainMenu" id="IDM_VS_CTXT_ITEMNODE"/>
@@ -20,13 +26,15 @@
     </Groups>
 
     <Buttons>
-      <!-- <Button guid="guidNuPackPackageCmdSet" id="AssemblyInfoEditCommandId" priority="0x0100" type="Button"> -->
-      <!--   <Parent guid="guidNuPackPackageCmdSet" id="MyMenuGroup" /> -->
-      <!--   <Icon guid="guidAssemblyInfoFileImage" id="bmpPic1" /> -->
-      <!--   <Strings> -->
-      <!--     <ButtonText>Edit Assembly Info...</ButtonText> -->
-      <!--   </Strings> -->
-      <!-- </Button> -->
+      <Button guid="guidAssemblyInfoEditPackageCmdSet" id="cmdidAssemblyInfoEditCommand" priority="0x0100" type="Button">
+        <Parent guid="guidAssemblyInfoEditPackageCmdSet" id="SolutionGroup" />
+        <Icon guid="guidAssemblyInfoFileImage" id="assemblyInfoFilePic" />
+        <CommandFlag>DefaultInvisible</CommandFlag>
+        <CommandFlag>DynamicVisibility</CommandFlag>
+        <Strings>
+          <ButtonText>Edit Assembly Info...</ButtonText>
+        </Strings>
+      </Button>
       <Button guid="guidDeployPackageCmdSet" id="cmdidDeployPackageCommand" priority="0x0100" type="Button">
         <Parent guid="guidDeployPackageCmdSet" id="DeployMenuGroup" />
         <Icon guid="guidPackageDeploymentImage" id="deployPic" />
@@ -38,16 +46,32 @@
         <Parent guid="guidMigrateNuspecToProjectCmdSet" id="MigrateNuspecMenuGroup" />
         <Icon guid="guidPackagePropertyImage" id="migrateNuspecPic" />
         <Strings>
-          <ButtonText>Migrate package.nuspec to Project Properties</ButtonText>
+          <ButtonText>Migrate .nuspec to Project Properties</ButtonText>
         </Strings>
         <CommandFlag>DefaultInvisible</CommandFlag>
         <CommandFlag>DynamicVisibility</CommandFlag>
       </Button>
+      <Button guid="guidAddDirectoryBuildPropsPackageCmdSet" id="cmdidAddDirectoryBuildPropsCommand" priority="0x0100" type="Button">
+        <Parent guid="guidAddDirectoryBuildPropsPackageCmdSet" id="SolutionAddGroup" />
+        <!-- <CommandFlag>DefaultInvisible</CommandFlag> -->
+        <!-- <CommandFlag>DynamicVisibility</CommandFlag> -->
+        <Strings>
+          <ButtonText>Directory.Build.props</ButtonText>
+        </Strings>
+      </Button>
+      <Button guid="guidAddNuSpecPackageCmdSet" id="cmdidAddNuSpecCommand" priority="0x0100" type="Button">
+        <Parent guid="guidAddNuSpecPackageCmdSet" id="ProjectAddGroup" />
+        <CommandFlag>DefaultInvisible</CommandFlag>
+        <CommandFlag>DynamicVisibility</CommandFlag>
+        <Strings>
+          <ButtonText>$Project$.nuspec</ButtonText>
+        </Strings>
+      </Button>
     </Buttons>
 
-   
+
     <Bitmaps>
-      <!-- <Bitmap guid="guidAssemblyInfoFileImage" href="Resources\AssemblyInfoFile.png" usedList="bmpPic1" /> -->
+      <Bitmap guid="guidAssemblyInfoFileImage" href="Resources\AssemblyInfoFile.png" usedList="assemblyInfoFilePic" />
       <Bitmap guid="guidPackageDeploymentImage" href="Resources\PackageDeployment.png" usedList="deployPic" />
       <Bitmap guid="guidPackagePropertyImage" href="Resources\PackageProperty.png" usedList="migrateNuspecPic" />
     </Bitmaps>
@@ -58,32 +82,42 @@
   </VisibilityConstraints>
 
   <Symbols>
-  
+
     <GuidSymbol name="guidNuPackPackage" value="{b90fffa4-9f8a-4bbf-9a4f-16880fbfea9c}" />
 
-    <!-- <GuidSymbol name="guidNuPackPackageCmdSet" value="{2dff605d-c360-4f36-9f5e-1b117fcd71f4}"> -->
-    <!--   <IDSymbol name="MyMenuGroup" value="0x1020" /> -->
-    <!--   <IDSymbol name="AssemblyInfoEditCommandId" value="0x0100" /> -->
-    <!-- </GuidSymbol> -->
+    <GuidSymbol name="guidAssemblyInfoFileImage" value="{5eef0341-bf87-44d6-a23a-7ff27bee5514}">
+      <IDSymbol name="assemblyInfoFilePic" value="1" />
+    </GuidSymbol>
 
-    <!-- <GuidSymbol name="guidAssemblyInfoFileImage" value="{5eef0341-bf87-44d6-a23a-7ff27bee5514}"> -->
-    <!--   <IDSymbol name="bmpPic1" value="1" /> -->
-    <!-- </GuidSymbol> -->
-  
+    <GuidSymbol name="guidAddDirectoryBuildPropsPackageCmdSet" value="{0A4174DB-9A22-4CE5-A1CB-B7F63855308F}">
+      <IDSymbol name="SolutionAddGroup" value="0x1020" />
+      <IDSymbol name="cmdidAddDirectoryBuildPropsCommand" value="253" />
+    </GuidSymbol>
+
+    <GuidSymbol name="guidAddNuSpecPackageCmdSet" value="{1eefc81f-e74a-427a-a9e5-671d321226a1}">
+      <IDSymbol name="ProjectAddGroup" value="0x1020" />
+      <IDSymbol name="cmdidAddNuSpecCommand" value="252" />
+    </GuidSymbol>
+
+    <GuidSymbol value="{4005AFC6-1B77-4227-A90E-13A792A6EBB5}" name="guidAssemblyInfoEditPackageCmdSet">
+      <IDSymbol value="4128" name="SolutionGroup" />
+      <IDSymbol value="255" name="cmdidAssemblyInfoEditCommand" />
+    </GuidSymbol>
+
     <GuidSymbol value="{7d371e13-afd3-4d17-8c84-9bf0fe65da2a}" name="guidDeployPackageCmdSet">
       <IDSymbol value="4128" name="DeployMenuGroup" />
       <IDSymbol value="256" name="cmdidDeployPackageCommand" />
     </GuidSymbol>
-  
+
     <GuidSymbol value="{04e5e168-97c3-438a-b67e-35b4b90e81e3}" name="guidPackageDeploymentImage">
       <IDSymbol name="deployPic" value="1" />
     </GuidSymbol>
-  
+
     <GuidSymbol value="{df6aceb6-5353-4ec9-9174-069d2b2605ce}" name="guidMigrateNuspecToProjectCmdSet">
       <IDSymbol value="4128" name="MigrateNuspecMenuGroup" />
       <IDSymbol value="257" name="cmdidMigrateNuspecToProjectCommand" />
     </GuidSymbol>
-  
+
     <GuidSymbol value="{a266cd18-7edb-45c4-adb6-279ebf281d84}" name="guidPackagePropertyImage">
       <IDSymbol name="migrateNuspecPic" value="1" />
     </GuidSymbol>

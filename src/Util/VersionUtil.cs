@@ -22,5 +22,11 @@ namespace CnSharp.VisualStudio.NuPack.Util
         {
             return Regex.IsMatch(version, @"\d+\.\d+\.\d{4}\.\d{5}");
         }
+
+        public static string ToSemanticVersion(this string fileVersion)
+        {
+            var version = Version.Parse(fileVersion);
+            return $"{version.Major}.{version.Minor}.{version.Build}";
+        }
     }
 }

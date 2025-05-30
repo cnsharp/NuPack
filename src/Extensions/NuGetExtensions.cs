@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Xml;
-using System.Xml.Linq;
 using CnSharp.VisualStudio.Extensions;
 using CnSharp.VisualStudio.Extensions.Projects;
-using CnSharp.VisualStudio.Extensions.Util;
+using CnSharp.VisualStudio.NuPack.Util;
 using EnvDTE;
 using NuGet.Packaging;
 using NuGet.Packaging.Core;
@@ -16,126 +13,37 @@ namespace CnSharp.VisualStudio.NuPack.Extensions
 {
     public static class NuGetExtensions
     {
-        public static string GetNuSpecFilePath(this Project project)
+        public static string GetNuspecFilePath(this Project project)
         {
-            return Path.Combine(project.GetDirectory(), NuGetDomain.NuSpecFileName);
+            return Path.Combine(project.GetDirectory(), project.Name+".nuspec");
         }
-
         public static ManifestMetadata LoadFromNuspecFile(string file)
         {
-            var metadata = new ManifestMetadata();
-            var doc = XDocument.Load(file);
-            var elements = doc.Element("package").Element("metadata").Elements().ToList();
-            var props = typeof(ManifestMetadata).GetProperties()
-                .Where(p => p.PropertyType.IsValueType || 
-                                 p.PropertyType == typeof(string))
-                .ToList();
-            foreach (var prop in props)
-            {
-                if (prop.PropertyType == typeof(string))
-                {
-                    var v = elements.FirstOrDefault(m => m.Name.LocalName.Equals(prop.Name,StringComparison.InvariantCultureIgnoreCase))?.Value;
-                    if (v != null)
-                    {
-                        prop.SetValue(metadata, v, null);
-                    }
-                }
-                else if (prop.PropertyType == typeof(bool))
-                {
-                    var v = elements.FirstOrDefault(m => m.Name.LocalName.Equals(prop.Name, StringComparison.InvariantCultureIgnoreCase))?.Value;
-                    if (v != null)
-                    {
-                        prop.SetValue(metadata, v.Equals("true",StringComparison.InvariantCultureIgnoreCase), null);
-                    }
-                }
-            } 
-            SetUrl(elements, "licenseUrl", v => metadata.SetLicenseUrl(v));
-            SetUrl(elements, "iconUrl", v => metadata.SetIconUrl(v));
-            SetUrl(elements, "projectUrl", v => metadata.SetProjectUrl(v));
-            return metadata;
+            return Util.NuspecReader.ReadMetadata(file);
         }
 
-        private static void SetUrl(List<XElement> elements, string node, Action<string> action)
-        {
-            var v = elements.FirstOrDefault(m => m.Name.LocalName.Equals(node, StringComparison.InvariantCultureIgnoreCase))?.Value;
-            if (!string.IsNullOrWhiteSpace(v))
-            {
-                action.Invoke(v);
-            }
-        }
 
         public static void UpdateNuspec(this Project project, ManifestMetadata metadata)
         {
-            var nuspecFile = project.GetNuSpecFilePath();
-            if (!File.Exists(nuspecFile))
-            {
-                return;
-            }
+            var nuspecFile = project.GetNuspecFilePath();
+            if (!File.Exists(nuspecFile)) return;
 
             metadata.SaveToNuSpec(nuspecFile);
         }
 
-        public static void SaveToNuSpec(this ManifestMetadata metadata,string nuspecFile)
+        public static void SaveToNuSpec(this ManifestMetadata metadata, string nuspecFile)
         {
-            var doc = new XmlDocument();
-            doc.Load(nuspecFile);
-            metadata.SyncToXmlDocument(doc);
-            doc.Save(nuspecFile);
+            NuspecWriter.UpdateNuspec(nuspecFile, metadata, true);
         }
-
-        public static void SyncToXmlDocument(this  ManifestMetadata metadata, XmlDocument doc)
-        {
-            var metadataNode = doc.SelectSingleNode("package/metadata");
-            if (metadataNode == null)
-                return;
-            var props = typeof(ManifestMetadata).GetProperties().Where(p => p.PropertyType.IsValueType || p.PropertyType == typeof(string)).ToList();
-            props.ForEach(p =>
-            {
-                var val = p.GetValue(metadata, null);
-                if (val == null) return;
-                var text = p.PropertyType == typeof(bool)
-                    ? val.ToString().ToLower()
-                    : val.ToString();
-                metadataNode.SetXmlNode(p.Name.Substring(0,1).ToLower()+p.Name.Substring(1),text);
-            });
-            UpdateDependencies( metadata,doc);
-        }
-
-        private static void SetXmlNode(this XmlNode metadataNode, string key, string value)
-        {
-            var idNode = metadataNode.SelectSingleNode(key);
-            if (idNode != null)
-                idNode.InnerText = value == null ? string.Empty : value;
-        }
-
-        public static void UpdateDependencies(this ManifestMetadata metadata, XmlDocument doc)
-        {
-            var metadataNode = doc.SelectSingleNode("package/metadata");
-            if (metadataNode == null)
-                return;
-
-            if (metadata.DependencyGroups?.Any() == true)
-            {
-                var depNode = metadataNode.SelectSingleNode("dependencyGroups");
-                if (depNode == null)
-                {
-                    var node = doc.CreateElement("dependencyGroups");
-                    metadataNode.AppendChild(node);
-                    depNode = node;
-                }
-
-                depNode.RemoveAll();
-                var tempNode = doc.CreateElement("temp");
-                tempNode.InnerXml = XmlSerializerHelper.GetXmlStringFromObject(metadata.DependencyGroups);
-                depNode.InnerXml = tempNode.ChildNodes[0].InnerXml;
-            }
-        }
-
-
 
         public static bool IsEmptyOrPlaceHolder(this string value)
         {
-            return string.IsNullOrWhiteSpace(value) || value.StartsWith("$");
+            return string.IsNullOrWhiteSpace(value) || (value.StartsWith("$") && value.EndsWith("$"));
+        }
+
+        public static bool IsNotEmptyOrPlaceHolder(this string value)
+        {
+            return !string.IsNullOrWhiteSpace(value) && !(value.StartsWith("$") && value.EndsWith("$"));
         }
 
         public static ManifestMetadata ToManifestMetadata(this ProjectAssemblyInfo pai)
@@ -143,7 +51,7 @@ namespace CnSharp.VisualStudio.NuPack.Extensions
             var metadata = new ManifestMetadata
             {
                 Id = pai.Title,
-                Owners = new []{pai.Company},
+                Owners = new[] { pai.Company },
                 Title = pai.Title,
                 Description = pai.Description,
                 Authors = new[] { pai.Company },
@@ -152,7 +60,48 @@ namespace CnSharp.VisualStudio.NuPack.Extensions
             return metadata;
         }
 
-        public static ManifestMetadata CopyFromAssemblyInfo(this ManifestMetadata metadata,ProjectAssemblyInfo pai)
+        public static ManifestMetadata CopyFromManifestMetadata(this ManifestMetadata metadata, ManifestMetadata commonMetadata)
+        {
+            if (metadata.Id.IsEmptyOrPlaceHolder() && commonMetadata.Id.IsNotEmptyOrPlaceHolder())
+                metadata.Id = commonMetadata.Id;
+            if (metadata.Title.IsEmptyOrPlaceHolder() && commonMetadata.Title.IsNotEmptyOrPlaceHolder())
+                metadata.Title = commonMetadata.Title;
+            if (metadata.Owners?.Any() != true && commonMetadata.Owners?.Any() == true)
+                metadata.Owners = commonMetadata.Owners;
+            if (metadata.Description.IsEmptyOrPlaceHolder() && commonMetadata.Description.IsNotEmptyOrPlaceHolder())
+                metadata.Description = commonMetadata.Description;
+            if (metadata.Authors?.Any() != true && commonMetadata.Authors?.Any() == true)
+                metadata.Authors = commonMetadata.Authors;
+            if (metadata.Copyright.IsEmptyOrPlaceHolder() && commonMetadata.Copyright.IsNotEmptyOrPlaceHolder())
+                metadata.Copyright = commonMetadata.Copyright;
+            if (metadata.Icon.IsEmptyOrPlaceHolder() && commonMetadata.Icon.IsNotEmptyOrPlaceHolder())
+                metadata.Icon = commonMetadata.Icon;
+            if (metadata.IconUrl == null && commonMetadata.IconUrl != null)
+                metadata.SetIconUrl(commonMetadata.IconUrl.AbsoluteUri);
+            if (metadata.LicenseUrl == null && commonMetadata.LicenseUrl != null)
+                metadata.SetLicenseUrl(commonMetadata.LicenseUrl.AbsoluteUri);
+            if (metadata.LicenseMetadata == null && commonMetadata.LicenseMetadata != null)
+                metadata.LicenseMetadata = commonMetadata.LicenseMetadata;
+            if (metadata.ProjectUrl == null && commonMetadata.ProjectUrl != null)
+                metadata.SetProjectUrl(commonMetadata.ProjectUrl.AbsoluteUri);
+            if (metadata.Readme.IsEmptyOrPlaceHolder() && commonMetadata.Readme.IsNotEmptyOrPlaceHolder())
+                metadata.Readme = commonMetadata.Readme;
+            if (metadata.ReleaseNotes.IsEmptyOrPlaceHolder() && commonMetadata.ReleaseNotes.IsNotEmptyOrPlaceHolder())
+                metadata.ReleaseNotes = commonMetadata.ReleaseNotes;
+            if (metadata.RequireLicenseAcceptance == false && commonMetadata.RequireLicenseAcceptance)
+                metadata.RequireLicenseAcceptance = true;
+            if (metadata.Tags.IsEmptyOrPlaceHolder() && commonMetadata.Tags.IsNotEmptyOrPlaceHolder())
+                metadata.Tags = commonMetadata.Tags;
+            if (metadata.Version == null && commonMetadata.Version != null)
+                metadata.Version = commonMetadata.Version;
+            if (metadata.Language.IsEmptyOrPlaceHolder() && commonMetadata.Language.IsNotEmptyOrPlaceHolder())
+                metadata.Language = commonMetadata.Language;
+            if (metadata.Repository == null && commonMetadata.Repository != null)
+                metadata.Repository = commonMetadata.Repository;
+            return metadata;
+        }
+
+        public static ManifestMetadata CopyFromAssemblyInfo(this ManifestMetadata metadata, ProjectAssemblyInfo pai)
         {
             if (metadata.Id.IsEmptyOrPlaceHolder())
                 metadata.Id = pai.Title;
@@ -188,23 +137,18 @@ namespace CnSharp.VisualStudio.NuPack.Extensions
             };
 
             if (!string.IsNullOrWhiteSpace(ppp.RepositoryUrl))
-            {
                 meta.Repository = new RepositoryMetadata
                 {
                     Type = ppp.RepositoryType ?? "git",
                     Url = ppp.RepositoryUrl
                 };
-            }
 
             if (!string.IsNullOrWhiteSpace(ppp.PackageLicenseExpression))
-            {
-                meta.LicenseMetadata = new LicenseMetadata(LicenseType.Expression, ppp.PackageLicenseExpression, null, null, LicenseMetadata.CurrentVersion);
-            }
+                meta.LicenseMetadata = new LicenseMetadata(LicenseType.Expression, ppp.PackageLicenseExpression, null,
+                    null, LicenseMetadata.CurrentVersion);
             else
-            {
                 meta.SetLicenseUrl(ppp.PackageLicenseUrl);
-            }
-            if(meta.Icon == null && !string.IsNullOrWhiteSpace(ppp.PackageIconUrl))
+            if (meta.Icon == null && !string.IsNullOrWhiteSpace(ppp.PackageIconUrl))
                 meta.SetIconUrl(ppp.PackageIconUrl);
             meta.SetProjectUrl(ppp.PackageProjectUrl);
             return meta;
@@ -241,10 +185,7 @@ namespace CnSharp.VisualStudio.NuPack.Extensions
                 ppp.PackageLicenseUrl = null;
             }
 
-            if (!string.IsNullOrWhiteSpace(ppp.PackageIcon))
-            {
-                ppp.PackageIconUrl = null;
-            }
+            if (!string.IsNullOrWhiteSpace(ppp.PackageIcon)) ppp.PackageIconUrl = null;
         }
 
 
@@ -254,7 +195,7 @@ namespace CnSharp.VisualStudio.NuPack.Extensions
             var projects = Host.Instance.DTE.GetSolutionProjects().ToList();
             projects.ForEach(p =>
             {
-                var nuspecFile = p.GetNuSpecFilePath();
+                var nuspecFile = p.GetNuspecFilePath();
                 if (File.Exists(nuspecFile))
                 {
                     var metadata = LoadFromNuspecFile(nuspecFile);
@@ -265,7 +206,7 @@ namespace CnSharp.VisualStudio.NuPack.Extensions
                         foreach (var g in metadata.DependencyGroups)
                         {
                             var packages = g.Packages.ToList();
-                            int i = 0;
+                            var i = 0;
                             PackageDependency pd = null;
                             foreach (var d in packages)
                             {
@@ -286,6 +227,7 @@ namespace CnSharp.VisualStudio.NuPack.Extensions
                                 packages.Insert(i, npd);
                             }
                         }
+
                         if (found)
                         {
                             metadata.SaveToNuSpec(nuspecFile);
@@ -296,11 +238,6 @@ namespace CnSharp.VisualStudio.NuPack.Extensions
             });
             return nuspecFiles;
         }
-    }
-
-    public class NuGetDomain
-    {
-        public const string NuSpecFileName = "package.nuspec";
     }
 
 }

@@ -1,4 +1,5 @@
 ﻿using System.Management;
+using System.Net;
 
 namespace CnSharp.VisualStudio.NuPack
 {
@@ -17,7 +18,7 @@ namespace CnSharp.VisualStudio.NuPack
                 if (!string.IsNullOrWhiteSpace(o["Organization"]?.ToString()))
                     return o["Organization"].ToString();
             }
-            return null;
+            return Dns.GetHostName();
             //return (string)Microsoft.Win32.Registry.GetValue(@"HKEY_LOCAL_MACHINE\Software\Microsoft\Windows NT\CurrentVersion", "RegisteredOrganization", "");
         }
     }

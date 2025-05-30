@@ -46,13 +46,29 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Commands\AddDirectoryBuildPropsCommand.cs" />
+    <Compile Include="Commands\AddNuSpecCommand.cs" />
     <Compile Include="Commands\AssemblyInfoEditCommand.cs" />
+    <Compile Include="Models\NuspecMsbuildMapper.cs" />
+    <Compile Include="Resources.cs" />
+    <Compile Include="Util\TargetFrameworkConverter.cs" />
     <Compile Include="Common.cs" />
     <Compile Include="Config\NuPackConfig.cs" />
     <Compile Include="Commands\DeployPackageCommand.cs" />
     <Compile Include="Controls\ControlExtensions.cs" />
+    <Compile Include="Controls\DotnetPackOptionsControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\DotnetPackOptionsControl.Designer.cs">
+      <DependentUpon>DotnetPackOptionsControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\NuGetPackOptionsControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\NuGetPackOptionsControl.Designer.cs">
+      <DependentUpon>NuGetPackOptionsControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="Extensions\NuGetExtensions.cs" />
-    <Compile Include="Extensions\ServiceProviderExtensions.cs" />
     <Compile Include="Extensions\SolutionDataCache.cs" />
     <Compile Include="Forms\AssemblyInfoForm.cs">
       <SubType>Form</SubType>
@@ -101,14 +117,23 @@
       <DependentUpon>Resource.resx</DependentUpon>
     </Compile>
     <Compile Include="Util\CmdUtil.cs" />
+    <Compile Include="Models\DirectoryBuildProps.cs" />
     <Compile Include="Util\DirectoryBuildUtil.cs" />
     <Compile Include="Util\LicenseReader.cs" />
+    <Compile Include="Util\MessageBoxHelper.cs" />
     <Compile Include="Util\NuGetConfigReader.cs" />
+    <Compile Include="Util\NuspecReader.cs" />
+    <Compile Include="Util\NuspecWriter.cs" />
     <Compile Include="Util\VersionUtil.cs" />
-    <Compile Include="Util\XmlTextFormatter.cs" />
     <Compile Include="Util\Validation.cs" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Controls\DotnetPackOptionsControl.resx">
+      <DependentUpon>DotnetPackOptionsControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\NuGetPackOptionsControl.resx">
+      <DependentUpon>NuGetPackOptionsControl.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Resources\licenses.json" />
     <None Include="source.extension.vsixmanifest">
       <SubType>Designer</SubType>
@@ -130,14 +155,11 @@
     <PackageReference Include="Microsoft.CSharp">
       <Version>4.7.0</Version>
     </PackageReference>
-    <PackageReference Include="Microsoft.VisualStudio.SDK" Version="17.12.40392" ExcludeAssets="runtime">
-      <IncludeAssets>compile; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
     <PackageReference Include="NuGet.Packaging">
-      <Version>6.12.1</Version>
+      <Version>6.14.0</Version>
     </PackageReference>
     <PackageReference Include="VsSharp">
-      <Version>17.0.2</Version>
+      <Version>17.1.0</Version>
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
@@ -159,6 +181,7 @@
     <Content Include="Resources\AssemblyInfoFile.png" />
     <Content Include="Resources\attribute.png" />
     <Content Include="Resources\Close.png" />
+    <EmbeddedResource Include="Resources\DirectoryBuildPropsTemplate.xml" />
     <Content Include="Resources\exchange.png" />
     <Content Include="Resources\folder.png" />
     <Content Include="Resources\HelpIndexFile.png" />
@@ -168,6 +191,7 @@
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
     <Content Include="Resources\nuget.ico" />
+    <EmbeddedResource Include="Resources\NuSpecTemplate.xml" />
     <Content Include="Resources\PackageDeployment.png" />
     <Content Include="Resources\PackageProperty.png" />
     <Content Include="Resources\reload32.png" />
@@ -196,6 +220,7 @@
     <EmbeddedResource Include="Resource.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resource.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup />

@@ -34,7 +34,7 @@
             this.label7 = new System.Windows.Forms.Label();
             this.label13 = new System.Windows.Forms.Label();
             this.label11 = new System.Windows.Forms.Label();
-            this.textBoxOwners = new System.Windows.Forms.TextBox();
+            this.textBoxTitle = new System.Windows.Forms.TextBox();
             this.textBoxDescription = new System.Windows.Forms.TextBox();
             this.label3 = new System.Windows.Forms.Label();
             this.textBoxReleaseNotes = new System.Windows.Forms.TextBox();
@@ -103,9 +103,9 @@
             this.label13.AutoSize = true;
             this.label13.Location = new System.Drawing.Point(376, 33);
             this.label13.Name = "label13";
-            this.label13.Size = new System.Drawing.Size(47, 12);
+            this.label13.Size = new System.Drawing.Size(35, 12);
             this.label13.TabIndex = 53;
-            this.label13.Text = "Owners*";
+            this.label13.Text = "Title";
             // 
             // label11
             // 
@@ -116,14 +116,14 @@
             this.label11.TabIndex = 51;
             this.label11.Text = "Description*";
             // 
-            // textBoxOwners
+            // textBoxTitle
             // 
-            this.textBoxOwners.BackColor = System.Drawing.SystemColors.Info;
-            this.textBoxOwners.Location = new System.Drawing.Point(495, 30);
-            this.textBoxOwners.Name = "textBoxOwners";
-            this.textBoxOwners.Size = new System.Drawing.Size(246, 21);
-            this.textBoxOwners.TabIndex = 2;
-            this.textBoxOwners.Tag = "OwnersString";
+            this.textBoxTitle.BackColor = System.Drawing.SystemColors.Window;
+            this.textBoxTitle.Location = new System.Drawing.Point(495, 30);
+            this.textBoxTitle.Name = "textBoxTitle";
+            this.textBoxTitle.Size = new System.Drawing.Size(246, 21);
+            this.textBoxTitle.TabIndex = 2;
+            this.textBoxTitle.Tag = "Title";
             // 
             // textBoxDescription
             // 
@@ -378,7 +378,7 @@
             this.Controls.Add(this.label7);
             this.Controls.Add(this.label13);
             this.Controls.Add(this.label11);
-            this.Controls.Add(this.textBoxOwners);
+            this.Controls.Add(this.textBoxTitle);
             this.Controls.Add(this.textBoxDescription);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.textBoxReleaseNotes);
@@ -397,7 +397,7 @@
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.Label label13;
         private System.Windows.Forms.Label label11;
-        private System.Windows.Forms.TextBox textBoxOwners;
+        private System.Windows.Forms.TextBox textBoxTitle;
         private System.Windows.Forms.TextBox textBoxDescription;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.TextBox textBoxReleaseNotes;

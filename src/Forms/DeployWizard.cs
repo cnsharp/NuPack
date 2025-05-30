@@ -14,7 +14,6 @@ using CnSharp.VisualStudio.NuPack.Models;
 using CnSharp.VisualStudio.NuPack.Util;
 using EnvDTE;
 using EnvDTE80;
-using Microsoft.VisualStudio.Shell;
 using NuGet.Packaging;
 using NuGet.Versioning;
 using Process = System.Diagnostics.Process;
@@ -23,17 +22,21 @@ namespace CnSharp.VisualStudio.NuPack.Forms
 {
     public partial class DeployWizard : Form
     {
+        private readonly bool _isSdkBased;
+        private readonly DirectoryBuildProps _directoryBuildProps;
         private readonly DTE2 _dte;
         private readonly ManifestMetadata _metadata;
         private readonly ManifestMetadataViewModel _metadataVM;
-        private readonly AsyncPackage _package;
         private readonly PackageMetadataControl _metadataControl;
-        private readonly PackOptionsControl _optionsControl;
         private readonly PackageProjectProperties _ppp;
+        private readonly PackOptionsControl _optionsControl;
         private readonly Project _project;
+        private readonly ProjectAssemblyInfo _assemblyInfo;
         private readonly string _projectDir;
         private readonly string _slnDir;
         private string _outputDir;
+        private string _nuspecFile;
+        private string _nupkgPath;
 
         private DeployWizard()
         {
@@ -58,20 +61,40 @@ namespace CnSharp.VisualStudio.NuPack.Forms
             BindSources();
         }
 
-        public DeployWizard(DTE2 dte, AsyncPackage package) : this()
+        public DeployWizard(DTE2 dte) : this()
         {
             _dte = dte;
-            _package = package;
             var project = dte.GetActiveProject();
-            _ppp = project.GetPackageProjectProperties();
-            InitProjectPackageInfo(_ppp, project);
-            _metadata = _ppp.ToManifestMetadata();
+            _directoryBuildProps = dte.Solution.GetDirectoryBuildProps();
+            _isSdkBased = project.IsSdkBased();
+            if (_isSdkBased)
+                _ppp = project.GetPackageProjectProperties();
+            _nuspecFile = project.GetNuspecFilePath();
+            if (File.Exists(_nuspecFile))
+            {
+                _metadata = NuGetExtensions.LoadFromNuspecFile(_nuspecFile);
+                _assemblyInfo = project.HasAssemblyInfo() ? project.GetProjectAssemblyInfo() : null;
+                if (_assemblyInfo != null)
+                    _metadata = _metadata.CopyFromAssemblyInfo(_assemblyInfo);
+            }
+            else
+            {
+                if (_ppp != null)
+                {
+                    InitProjectPackageInfo(_ppp, project);
+                    _metadata = _ppp.ToManifestMetadata();
+                }
+                if (_directoryBuildProps != null)
+                    _metadata = _metadata.CopyFromManifestMetadata(_directoryBuildProps);
+            }
+
             _metadataVM = new ManifestMetadataViewModel(_metadata);
             _slnDir = Path.GetDirectoryName(dte.Solution.FileName);
             _project = _dte.GetActiveProject();
             _metadataControl.Project = _project;
             _projectDir = _project.GetDirectory();
             var outputDir = Path.Combine(_projectDir, "bin", Common.ProductName);
+            _optionsControl.SdkBased = _isSdkBased;
             _optionsControl.LoadConfig(_projectDir, outputDir);
         }
 
@@ -98,8 +121,13 @@ namespace CnSharp.VisualStudio.NuPack.Forms
         private void StepWizardControl_SelectedPageChanged(object sender, EventArgs e)
         {
             if (stepWizardControl.SelectedPage == wizardPageMetadata)
+            {
                 _metadataControl.Focus();
-            else if (stepWizardControl.SelectedPage == wizardPageOptions) _optionsControl.Focus();
+            }
+            else if (stepWizardControl.SelectedPage == wizardPageOptions)
+            {
+                _optionsControl.Focus();
+            }
         }
 
         private void StepWizardControl_Finished(object sender, EventArgs e)
@@ -114,9 +142,14 @@ namespace CnSharp.VisualStudio.NuPack.Forms
 
         private void BindingMetaData()
         {
-            var ver = _ppp.AssemblyVersion;
+           
             if (_metadataVM.Version == null)
+            {
+                //todo:product version in AssemblyInfo
+                var ver = _ppp?.AssemblyVersion ?? _assemblyInfo?.Version.ToSemanticVersion() ?? "1.0.0";
                 _metadataVM.Version = new NuGetVersion(ver);
+            }
+
             if (_metadataVM.Title.IsEmptyOrPlaceHolder())
                 _metadataVM.Title = _metadataVM.Id;
             _metadataControl.ManifestMetadata = _metadataVM;
@@ -127,9 +160,8 @@ namespace CnSharp.VisualStudio.NuPack.Forms
             var needPush = NeedPush();
             if (needPush && _optionsControl.PackArgs.NoBuild)
             {
-                var yes = _package.ShowQuestion("You are going to deploy the package with --nobuild,do you confirm?",
-                        "Warning");
-                if(!yes) return;
+                var dr = MessageBoxHelper.ShowQuestionMessageBox("You are going to deploy the package with --nobuild,do you confirm?");
+                if(dr != DialogResult.Yes) return;
             }
             ActiveOutputWindow();
             OutputMessage("start..." + Environment.NewLine);
@@ -148,6 +180,8 @@ namespace CnSharp.VisualStudio.NuPack.Forms
             OutputMessage(Environment.NewLine + "Save project config.");
             SaveProjectConfig();
 
+
+            _nupkgPath = Path.Combine(_outputDir, $"{_metadataVM.Id}.{_metadataVM.VersionString}.nupkg");
             if (!needPush)
             {
                 ShowPackages();
@@ -162,23 +196,66 @@ namespace CnSharp.VisualStudio.NuPack.Forms
 
         private void SavePackageInfo()
         {
-            LinkIcon();
-            LinkReadme();
             _project.Save();
-            _metadataVM.SyncToPackageProjectProperties(_ppp);
-            _project.SavePackageProjectProperties(_ppp);
+            _directoryBuildProps?.Save();
+
+            var newIcon = LinkIcon();
+            var newReadme = LinkReadme();
+
+            if (File.Exists(_nuspecFile))
+            {
+                var removingFiles = new List<string>();
+                var files = new List<string>();
+                if (newIcon != null)
+                {
+                    files.Add(newIcon);
+                    removingFiles.Add(_metadata.Icon);
+                }
+
+                if (newReadme != null)
+                {
+                    files.Add(newReadme);
+                    removingFiles.Add(_metadata.Readme);
+                }
+
+                SaveNuspec(removingFiles, files);
+            }
+            else if(_ppp != null)
+            {
+                _metadataVM.SyncToPackageProjectProperties(_ppp);
+                var skipProps = _directoryBuildProps?.GetValuedProperties()?.ToArray();
+                _project.SavePackageProjectProperties(_ppp, skipProps);
+            }
+
+            if (_assemblyInfo != null)
+                SaveAssemblyInfo();
         }
 
-        private void LinkIcon()
+        private void SaveAssemblyInfo()
         {
-            if (!_metadataVM.IconChanged) return;
+            _assemblyInfo.Company = _metadataVM.Owners != null ? string.Join(",", _metadataVM.Owners) : string.Empty;
+            _assemblyInfo.Save(true);
+        }
+
+        private void SaveNuspec(List<string> removingFiles, List<string> files)
+        {
+            _project.UpdateNuspec(_metadataVM);
+            if (files?.Any() == true)
+                NuspecWriter.ChangeFiles(_project.GetNuspecFilePath(), removingFiles, files);
+        }
+
+        private string LinkIcon()
+        {
+            if (!_metadataVM.IconChanged) return null;
             _metadataVM.Icon = AddOrUpdatePackFile(_metadataVM.IconUrlString, _metadata.Icon);
+            return _metadataVM.Icon;
         }
 
-        private void LinkReadme()
+        private string LinkReadme()
         {
-            if (!_metadataVM.ReadmeChanged) return;
+            if (!_metadataVM.ReadmeChanged) return null;
             _metadataVM.Readme = AddOrUpdatePackFile(_metadataVM.Readme, _metadata.Readme);
+            return _metadataVM.Readme;
         }
 
         private string AddOrUpdatePackFile(string filePath, string oldFile)
@@ -209,16 +286,43 @@ namespace CnSharp.VisualStudio.NuPack.Forms
             }
            
             var fileName = Path.GetFileName(absolutePath);
-            var existsItem = _project.ProjectItems.Item(fileName);
-            if (existsItem != null)
+            try
             {
-                existsItem.Remove();
+                var existsItem = _project.ProjectItems.Item(fileName);
+                if (existsItem != null)
+                {
+                    existsItem.Remove();
+                }
+            }
+            catch
+            {
+                //ignored, exception may occur in .NET framework project
             }
 
-            var item = _project.ProjectItems.AddFromFile(absolutePath);
-            _project.SetItemAttribute(item, "Pack", true.ToString());
-            _project.SetItemAttribute(item, "PackagePath", "\\");
+            AddToProject(absolutePath);
+
             return fileName;
+        }
+
+        private void AddToProject(string filePath)
+        {
+            if (_isSdkBased)
+            {
+                var item = _project.ProjectItems.AddFromFile(filePath);
+                _project.SetItemAttribute(item, "Pack", true.ToString());
+                _project.SetItemAttribute(item, "PackagePath", "\\");
+            }
+            else
+            {
+                //nuget pack will copy the file to output directory,it needs file to be in project directory
+                var physicalPath = Path.Combine(_projectDir, Path.GetFileName(filePath));
+                if (physicalPath != filePath)
+                {
+                    File.Copy(filePath, physicalPath, true);
+                }
+                var item = _project.ProjectItems.AddFromFile(physicalPath);
+                item.Properties.Item("CopyToOutputDirectory").Value = 2;//copy if newer
+            }
         }
 
         private string ToAbsolutePath(string path)
@@ -241,6 +345,13 @@ namespace CnSharp.VisualStudio.NuPack.Forms
 
         private bool Pack()
         {
+            if (_isSdkBased)
+                return RunDotnetPack();
+            return RunNuGetPack();
+        }
+
+        private bool RunDotnetPack()
+        {
             var args = _optionsControl.PackArgs;
             var script =
                 new StringBuilder(
@@ -255,9 +366,29 @@ namespace CnSharp.VisualStudio.NuPack.Forms
                 script.Append(" --no-build ");
             if (args.NoDependencies)
                 script.Append(" --no-dependencies ");
-            // if (File.Exists(_nuspecFile))
-            //     script.AppendFormat(" -p:NuspecFile=\"{0}\" ", _nuspecFile);
+            if (File.Exists(_nuspecFile))
+                script.AppendFormat(" -p:NuspecFile=\"{0}\" ", _nuspecFile);
+            OutputMessage("dotnet "+ script);
             return CmdUtil.RunDotnet(script.ToString(), OutputMessage, OutputMessage);
+        }
+
+        private bool RunNuGetPack()
+        {
+            var args = _optionsControl.PackArgs;
+            var script = new StringBuilder();
+            script.AppendFormat(
+                //NU5048: iconUrl warning
+                //ignore it
+                @"nuget pack ""{0}"" -Build -Version ""{1}"" -ForceEnglishOutput -Properties  ""Configuration=Release;NoWarn=NU5048""  -OutputDirectory ""{2}"" -MSBuildPath ""{3}"" ", 
+                _project.FileName, _metadataVM.VersionString, _outputDir.TrimEnd('\\'), GetMsBuildPath());//nuget pack path shouldn't end with slash
+
+            if (args.IncludeReferencedProjects)
+                script.Append(" -IncludeReferencedProjects ");
+            if (args.IncludeSymbols)
+                script.Append(" -Symbols ");
+            OutputMessage(script.ToString());
+            // nuget output is too verbose, we need to suppress it
+            return CmdUtil.RunCmd(script.ToString(), null, OutputMessage);
         }
 
         private void ActiveOutputWindow()
@@ -267,7 +398,15 @@ namespace CnSharp.VisualStudio.NuPack.Forms
 
         private void OutputMessage(string message)
         { 
-            _dte.OutputMessage(Common.ProductName, message);
+            _dte.OutputMessage(Common.ProductName, Environment.NewLine + message);
+        }
+
+        private string GetMsBuildPath()
+        {
+            //C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE
+            var dir = new DirectoryInfo(Application.StartupPath);
+            //C:\Program Files\Microsoft Visual Studio\2022\Community\MSBuild\Current\Bin
+            return Path.Combine(dir.Parent.Parent.FullName, "MSBuild", "Current", "Bin"); 
         }
 
         private bool NeedPush()
@@ -283,7 +422,7 @@ namespace CnSharp.VisualStudio.NuPack.Forms
             if (!string.IsNullOrWhiteSpace(args.Source))
             {
                 script.Append(
-                    $"nuget push \"{_outputDir}{_metadataVM.Id}.{_metadataVM.VersionString}.nupkg\" -s \"{args.Source}\" ");
+                    $"nuget push \"{_nupkgPath}\" -s \"{args.Source}\" ");
                 if (!string.IsNullOrWhiteSpace(args.ApiKey))
                     script.Append($" -k \"{args.ApiKey}\"");
             }
@@ -303,9 +442,8 @@ namespace CnSharp.VisualStudio.NuPack.Forms
 
         private void ShowPackages()
         {
-            var pkg = $"{_outputDir}{_metadataVM.Id}.{_metadataVM.VersionString}.nupkg";
-            if (File.Exists(pkg)) 
-                Process.Start("explorer.exe", $"/select,\"{pkg}\"");
+            if (File.Exists(_nupkgPath)) 
+                Process.Start("explorer.exe", $"/select,\"{_nupkgPath}\"");
         }
 
         private void EnsureOutputDir()
@@ -314,8 +452,6 @@ namespace CnSharp.VisualStudio.NuPack.Forms
             if (string.IsNullOrWhiteSpace(_outputDir)) return;
             if (!Directory.Exists(_outputDir))
                 Directory.CreateDirectory(_outputDir);
-            if (!_outputDir.EndsWith("\\"))
-                _outputDir += "\\";
         }
 
         private void SaveProjectConfig()

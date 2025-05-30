@@ -51,12 +51,14 @@ namespace CnSharp.VisualStudio.NuPack.Models
             Version = metadata.Version;
         }
 
+
         public string AuthorsString
         {
             get => Authors != null ? string.Join(",", Authors) : string.Empty;
             set => Authors = value.Split(',').ToList();
         }
 
+        [Obsolete]
         public string OwnersString
         {
             get => Owners != null ? string.Join(",", Owners) : string.Empty;
@@ -97,7 +99,7 @@ namespace CnSharp.VisualStudio.NuPack.Models
             set
             {
                 Icon = value;
-                if (!string.IsNullOrWhiteSpace(value) && value.StartsWith("http"))
+                if (!string.IsNullOrWhiteSpace(value) && (value.StartsWith("http://") || value.StartsWith("https://")))
                 { 
                     SetIconUrl(value);
                     Icon = null;

@@ -1,4 +1,10 @@
-﻿### V17.0.3 2/17/2025
+﻿### V17.1.0 6/1/2025
+* Restore support for classic projects.
+* Restore support for AssemblyInfo editing.
+* Restore support for Directory.Build.props.
+* Support .nuspec file for SDK style projects.
+
+### V17.0.3 2/17/2025
 * Fix a NullReferenceException bug when the project has no package info.
 [#33](https://github.com/cnsharp/NuPack/issues/33)
 
@@ -16,7 +22,7 @@
 * A dependency bug fix.
 
 ### V2.1.0 7/30/2018
-* Add  universal app platform (UAP) projects support.
+* Add universal app platform (UAP) projects support.
 
 ### V2.0.6 6/1/2018
 * Support nuget source path with spaces.
