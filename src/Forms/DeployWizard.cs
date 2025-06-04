@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Windows.Forms;
-using AeroWizard;
+﻿using AeroWizard;
 using CnSharp.VisualStudio.Extensions;
 using CnSharp.VisualStudio.Extensions.Projects;
 using CnSharp.VisualStudio.NuPack.Config;
@@ -12,11 +6,17 @@ using CnSharp.VisualStudio.NuPack.Controls;
 using CnSharp.VisualStudio.NuPack.Extensions;
 using CnSharp.VisualStudio.NuPack.Models;
 using CnSharp.VisualStudio.NuPack.Util;
-using EnvDTE;
 using EnvDTE80;
 using NuGet.Packaging;
 using NuGet.Versioning;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Text;
+using System.Windows.Forms;
 using Process = System.Diagnostics.Process;
+using Project = EnvDTE.Project;
 
 namespace CnSharp.VisualStudio.NuPack.Forms
 {
@@ -69,13 +69,11 @@ namespace CnSharp.VisualStudio.NuPack.Forms
             _isSdkBased = project.IsSdkBased();
             if (_isSdkBased)
                 _ppp = project.GetPackageProjectProperties();
+            _assemblyInfo = project.HasAssemblyInfo() ? project.GetProjectAssemblyInfo() : null;
             _nuspecFile = project.GetNuspecFilePath();
             if (File.Exists(_nuspecFile))
             {
                 _metadata = NuGetExtensions.LoadFromNuspecFile(_nuspecFile);
-                _assemblyInfo = project.HasAssemblyInfo() ? project.GetProjectAssemblyInfo() : null;
-                if (_assemblyInfo != null)
-                    _metadata = _metadata.CopyFromAssemblyInfo(_assemblyInfo);
             }
             else
             {
@@ -87,11 +85,15 @@ namespace CnSharp.VisualStudio.NuPack.Forms
                 if (_directoryBuildProps != null)
                     _metadata = _metadata.CopyFromManifestMetadata(_directoryBuildProps);
             }
+            if (_assemblyInfo != null)
+                _metadata = _metadata.CopyFromAssemblyInfo(_assemblyInfo);
 
             _metadataVM = new ManifestMetadataViewModel(_metadata);
             _slnDir = Path.GetDirectoryName(dte.Solution.FileName);
             _project = _dte.GetActiveProject();
             _metadataControl.Project = _project;
+            _metadataControl.SolutionDirectory = _slnDir;
+
             _projectDir = _project.GetDirectory();
             var outputDir = Path.Combine(_projectDir, "bin", Common.ProductName);
             _optionsControl.SdkBased = _isSdkBased;
@@ -145,8 +147,7 @@ namespace CnSharp.VisualStudio.NuPack.Forms
            
             if (_metadataVM.Version == null)
             {
-                //todo:product version in AssemblyInfo
-                var ver = _ppp?.AssemblyVersion ?? _assemblyInfo?.Version.ToSemanticVersion() ?? "1.0.0";
+                var ver = _ppp?.AssemblyVersion ?? _assemblyInfo?.InformationalVersion ?? _assemblyInfo?.Version.ToSemanticVersion() ?? "1.0.0";
                 _metadataVM.Version = new NuGetVersion(ver);
             }
 
@@ -176,7 +177,6 @@ namespace CnSharp.VisualStudio.NuPack.Forms
             }
             OutputMessage(Environment.NewLine + "Do packaging...");
             if (!Pack()) return;
-            // ShowPackages();
             OutputMessage(Environment.NewLine + "Save project config.");
             SaveProjectConfig();
 
@@ -196,25 +196,21 @@ namespace CnSharp.VisualStudio.NuPack.Forms
 
         private void SavePackageInfo()
         {
-            _project.Save();
             _directoryBuildProps?.Save();
-
-            var newIcon = LinkIcon();
-            var newReadme = LinkReadme();
 
             if (File.Exists(_nuspecFile))
             {
                 var removingFiles = new List<string>();
                 var files = new List<string>();
-                if (newIcon != null)
+                if (_metadataVM.IconChanged)
                 {
-                    files.Add(newIcon);
+                    files.Add(_metadataVM.Icon);
                     removingFiles.Add(_metadata.Icon);
                 }
 
-                if (newReadme != null)
+                if (_metadataVM.ReadmeChanged)
                 {
-                    files.Add(newReadme);
+                    files.Add(_metadataVM.Readme);
                     removingFiles.Add(_metadata.Readme);
                 }
 
@@ -226,15 +222,6 @@ namespace CnSharp.VisualStudio.NuPack.Forms
                 var skipProps = _directoryBuildProps?.GetValuedProperties()?.ToArray();
                 _project.SavePackageProjectProperties(_ppp, skipProps);
             }
-
-            if (_assemblyInfo != null)
-                SaveAssemblyInfo();
-        }
-
-        private void SaveAssemblyInfo()
-        {
-            _assemblyInfo.Company = _metadataVM.Owners != null ? string.Join(",", _metadataVM.Owners) : string.Empty;
-            _assemblyInfo.Save(true);
         }
 
         private void SaveNuspec(List<string> removingFiles, List<string> files)
@@ -243,106 +230,7 @@ namespace CnSharp.VisualStudio.NuPack.Forms
             if (files?.Any() == true)
                 NuspecWriter.ChangeFiles(_project.GetNuspecFilePath(), removingFiles, files);
         }
-
-        private string LinkIcon()
-        {
-            if (!_metadataVM.IconChanged) return null;
-            _metadataVM.Icon = AddOrUpdatePackFile(_metadataVM.IconUrlString, _metadata.Icon);
-            return _metadataVM.Icon;
-        }
-
-        private string LinkReadme()
-        {
-            if (!_metadataVM.ReadmeChanged) return null;
-            _metadataVM.Readme = AddOrUpdatePackFile(_metadataVM.Readme, _metadata.Readme);
-            return _metadataVM.Readme;
-        }
-
-        private string AddOrUpdatePackFile(string filePath, string oldFile)
-        {
-            if (string.IsNullOrWhiteSpace(filePath))
-            {
-                return null;
-            }
-            var absolutePath = ToAbsolutePath(filePath);
-            if (!string.IsNullOrEmpty(absolutePath) && !File.Exists(absolutePath))
-                throw new FileNotFoundException($"File `{filePath}` not found");
-            if (!string.IsNullOrWhiteSpace(oldFile))
-            {
-                var oldFilePath = Path.Combine(_projectDir, oldFile);
-                if (oldFilePath == absolutePath)
-                {
-                    //not changed
-                    return oldFile;
-                }
-                //remove old item
-                var oldItem = _project.ProjectItems.Item(oldFile);
-                if (oldItem != null)
-                {
-                    oldItem.Remove();
-                    if (File.Exists(oldFilePath))
-                        File.Delete(oldFilePath);
-                }
-            }
-           
-            var fileName = Path.GetFileName(absolutePath);
-            try
-            {
-                var existsItem = _project.ProjectItems.Item(fileName);
-                if (existsItem != null)
-                {
-                    existsItem.Remove();
-                }
-            }
-            catch
-            {
-                //ignored, exception may occur in .NET framework project
-            }
-
-            AddToProject(absolutePath);
-
-            return fileName;
-        }
-
-        private void AddToProject(string filePath)
-        {
-            if (_isSdkBased)
-            {
-                var item = _project.ProjectItems.AddFromFile(filePath);
-                _project.SetItemAttribute(item, "Pack", true.ToString());
-                _project.SetItemAttribute(item, "PackagePath", "\\");
-            }
-            else
-            {
-                //nuget pack will copy the file to output directory,it needs file to be in project directory
-                var physicalPath = Path.Combine(_projectDir, Path.GetFileName(filePath));
-                if (physicalPath != filePath)
-                {
-                    File.Copy(filePath, physicalPath, true);
-                }
-                var item = _project.ProjectItems.AddFromFile(physicalPath);
-                item.Properties.Item("CopyToOutputDirectory").Value = 2;//copy if newer
-            }
-        }
-
-        private string ToAbsolutePath(string path)
-        {
-            if (string.IsNullOrWhiteSpace(path) || path.Contains(":\\"))
-            {
-                return path;
-            }
-            Directory.SetCurrentDirectory(Path.GetDirectoryName(_project.FileName));
-            return Path.GetFullPath(path);
-        }
-
-        private string GetRelativePath(string path, string baseDir)
-        {
-            var uri = new Uri(path);
-            var exeUri = new Uri(baseDir);
-            var relativePath = exeUri.MakeRelativeUri(uri);
-            return relativePath.ToString();
-        }
-
+       
         private bool Pack()
         {
             if (_isSdkBased)

@@ -83,7 +83,7 @@
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(2, 3);
+            this.label6.Location = new System.Drawing.Point(-2, 3);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(23, 12);
             this.label6.TabIndex = 49;
@@ -160,10 +160,10 @@
             // 
             this.checkBoxRLA.AutoSize = true;
             this.checkBoxRLA.Enabled = false;
-            this.checkBoxRLA.Location = new System.Drawing.Point(378, 217);
+            this.checkBoxRLA.Location = new System.Drawing.Point(382, 192);
             this.checkBoxRLA.Name = "checkBoxRLA";
             this.checkBoxRLA.Size = new System.Drawing.Size(186, 16);
-            this.checkBoxRLA.TabIndex = 9;
+            this.checkBoxRLA.TabIndex = 7;
             this.checkBoxRLA.Tag = "RequireLicenseAcceptance ";
             this.checkBoxRLA.Text = "Require License Acceptance ";
             this.checkBoxRLA.UseVisualStyleBackColor = true;
@@ -188,7 +188,7 @@
             // labelIcon
             // 
             this.labelIcon.AutoSize = true;
-            this.labelIcon.Location = new System.Drawing.Point(-1, 303);
+            this.labelIcon.Location = new System.Drawing.Point(-2, 309);
             this.labelIcon.Name = "labelIcon";
             this.labelIcon.Size = new System.Drawing.Size(35, 12);
             this.labelIcon.TabIndex = 62;
@@ -197,7 +197,7 @@
             // label16
             // 
             this.label16.AutoSize = true;
-            this.label16.Location = new System.Drawing.Point(-1, 272);
+            this.label16.Location = new System.Drawing.Point(-2, 247);
             this.label16.Name = "label16";
             this.label16.Size = new System.Drawing.Size(77, 12);
             this.label16.TabIndex = 61;
@@ -205,24 +205,26 @@
             // 
             // textBoxIconUrl
             // 
-            this.textBoxIconUrl.Location = new System.Drawing.Point(96, 300);
+            this.textBoxIconUrl.Location = new System.Drawing.Point(96, 306);
             this.textBoxIconUrl.Name = "textBoxIconUrl";
             this.textBoxIconUrl.Size = new System.Drawing.Size(631, 21);
             this.textBoxIconUrl.TabIndex = 13;
             this.textBoxIconUrl.Tag = "IconUrlString";
+            this.textBoxIconUrl.Validating += new System.ComponentModel.CancelEventHandler(this.textBoxIconUrl_Validating);
+            this.textBoxIconUrl.Validated += new System.EventHandler(this.textBoxIconUrl_Validated);
             // 
             // textBoxProjectUrl
             // 
-            this.textBoxProjectUrl.Location = new System.Drawing.Point(96, 269);
+            this.textBoxProjectUrl.Location = new System.Drawing.Point(96, 251);
             this.textBoxProjectUrl.Name = "textBoxProjectUrl";
             this.textBoxProjectUrl.Size = new System.Drawing.Size(631, 21);
-            this.textBoxProjectUrl.TabIndex = 12;
+            this.textBoxProjectUrl.TabIndex = 10;
             this.textBoxProjectUrl.Tag = "ProjectUrlString";
             // 
             // labelLicense
             // 
             this.labelLicense.AutoSize = true;
-            this.labelLicense.Location = new System.Drawing.Point(-2, 211);
+            this.labelLicense.Location = new System.Drawing.Point(-2, 188);
             this.labelLicense.Name = "labelLicense";
             this.labelLicense.Size = new System.Drawing.Size(77, 12);
             this.labelLicense.TabIndex = 60;
@@ -230,16 +232,16 @@
             // 
             // textBoxCopyright
             // 
-            this.textBoxCopyright.Location = new System.Drawing.Point(96, 174);
+            this.textBoxCopyright.Location = new System.Drawing.Point(96, 149);
             this.textBoxCopyright.Name = "textBoxCopyright";
             this.textBoxCopyright.Size = new System.Drawing.Size(631, 21);
-            this.textBoxCopyright.TabIndex = 7;
+            this.textBoxCopyright.TabIndex = 5;
             this.textBoxCopyright.Tag = "Copyright";
             // 
             // label14
             // 
             this.label14.AutoSize = true;
-            this.label14.Location = new System.Drawing.Point(-2, 177);
+            this.label14.Location = new System.Drawing.Point(-2, 152);
             this.label14.Name = "label14";
             this.label14.Size = new System.Drawing.Size(65, 12);
             this.label14.TabIndex = 59;
@@ -259,22 +261,22 @@
             this.label1.AutoSize = true;
             this.label1.Location = new System.Drawing.Point(376, 0);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(101, 12);
+            this.label1.Size = new System.Drawing.Size(53, 12);
             this.label1.TabIndex = 66;
-            this.label1.Text = "Package Version*";
+            this.label1.Text = "Version*";
             // 
             // licenseBox
             // 
             this.licenseBox.FormattingEnabled = true;
-            this.licenseBox.Location = new System.Drawing.Point(96, 213);
+            this.licenseBox.Location = new System.Drawing.Point(96, 188);
             this.licenseBox.Name = "licenseBox";
             this.licenseBox.Size = new System.Drawing.Size(246, 20);
-            this.licenseBox.TabIndex = 8;
+            this.licenseBox.TabIndex = 6;
             // 
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(-1, 243);
+            this.label2.Location = new System.Drawing.Point(-2, 218);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(71, 12);
             this.label2.TabIndex = 68;
@@ -282,18 +284,18 @@
             // 
             // textBoxRepositoryUrl
             // 
-            this.textBoxRepositoryUrl.Location = new System.Drawing.Point(191, 243);
+            this.textBoxRepositoryUrl.Location = new System.Drawing.Point(195, 218);
             this.textBoxRepositoryUrl.Name = "textBoxRepositoryUrl";
-            this.textBoxRepositoryUrl.Size = new System.Drawing.Size(536, 21);
-            this.textBoxRepositoryUrl.TabIndex = 11;
+            this.textBoxRepositoryUrl.Size = new System.Drawing.Size(532, 21);
+            this.textBoxRepositoryUrl.TabIndex = 9;
             this.textBoxRepositoryUrl.Tag = "RepositoryUrl";
             // 
             // textBoxRepositoryType
             // 
-            this.textBoxRepositoryType.Location = new System.Drawing.Point(96, 243);
+            this.textBoxRepositoryType.Location = new System.Drawing.Point(96, 218);
             this.textBoxRepositoryType.Name = "textBoxRepositoryType";
             this.textBoxRepositoryType.Size = new System.Drawing.Size(89, 21);
-            this.textBoxRepositoryType.TabIndex = 10;
+            this.textBoxRepositoryType.TabIndex = 8;
             this.textBoxRepositoryType.Tag = "RepositoryType";
             this.textBoxRepositoryType.Text = "git";
             // 
@@ -302,7 +304,7 @@
             this.btnOpenIconDir.FlatAppearance.BorderSize = 0;
             this.btnOpenIconDir.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnOpenIconDir.Image = global::CnSharp.VisualStudio.NuPack.Resource.folder;
-            this.btnOpenIconDir.Location = new System.Drawing.Point(733, 300);
+            this.btnOpenIconDir.Location = new System.Drawing.Point(733, 306);
             this.btnOpenIconDir.Name = "btnOpenIconDir";
             this.btnOpenIconDir.Size = new System.Drawing.Size(23, 23);
             this.btnOpenIconDir.TabIndex = 14;
@@ -318,17 +320,17 @@
             this.buttonOpenReadme.FlatAppearance.BorderSize = 0;
             this.buttonOpenReadme.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.buttonOpenReadme.Image = global::CnSharp.VisualStudio.NuPack.Resource.folder;
-            this.buttonOpenReadme.Location = new System.Drawing.Point(732, 146);
+            this.buttonOpenReadme.Location = new System.Drawing.Point(733, 276);
             this.buttonOpenReadme.Name = "buttonOpenReadme";
             this.buttonOpenReadme.Size = new System.Drawing.Size(23, 23);
-            this.buttonOpenReadme.TabIndex = 6;
+            this.buttonOpenReadme.TabIndex = 12;
             this.buttonOpenReadme.UseVisualStyleBackColor = true;
             this.buttonOpenReadme.Click += new System.EventHandler(this.buttonOpenReadme_Click);
             // 
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(-2, 149);
+            this.label4.Location = new System.Drawing.Point(-2, 281);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(47, 12);
             this.label4.TabIndex = 71;
@@ -336,11 +338,13 @@
             // 
             // textBoxReadme
             // 
-            this.textBoxReadme.Location = new System.Drawing.Point(95, 146);
+            this.textBoxReadme.Location = new System.Drawing.Point(96, 278);
             this.textBoxReadme.Name = "textBoxReadme";
             this.textBoxReadme.Size = new System.Drawing.Size(631, 21);
-            this.textBoxReadme.TabIndex = 5;
+            this.textBoxReadme.TabIndex = 11;
             this.textBoxReadme.Tag = "Readme";
+            this.textBoxReadme.Validating += new System.ComponentModel.CancelEventHandler(this.textBoxReadme_Validating);
+            this.textBoxReadme.Validated += new System.EventHandler(this.textBoxReadme_Validated);
             // 
             // openReadmeDialog
             // 
@@ -383,7 +387,7 @@
             this.Controls.Add(this.label3);
             this.Controls.Add(this.textBoxReleaseNotes);
             this.Name = "PackageMetadataControl";
-            this.Size = new System.Drawing.Size(759, 360);
+            this.Size = new System.Drawing.Size(759, 359);
             this.ResumeLayout(false);
             this.PerformLayout();
 

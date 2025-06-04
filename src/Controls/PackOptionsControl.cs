@@ -16,6 +16,7 @@ namespace CnSharp.VisualStudio.NuPack.Controls
         private List<string> _symbolServers = new List<string>();
         private DotnetPackOptionsControl _dotnetPackOptionsControl;
         private NuGetPackOptionsControl _nuGetPackOptionsControl;
+        private PackArgs _packArgs = new PackArgs();
 
         public PackOptionsControl()
         {
@@ -26,7 +27,18 @@ namespace CnSharp.VisualStudio.NuPack.Controls
 
         public NuPackConfig Config { get; private set; }
 
-        public PackArgs PackArgs { get; private set; } = new PackArgs();
+        public PackArgs PackArgs
+        {
+            get => _packArgs;
+            private set
+            {
+                _packArgs = value;
+                if (_dotnetPackOptionsControl != null)
+                    _dotnetPackOptionsControl.PackArgs = value;
+                if (_nuGetPackOptionsControl != null)
+                    _nuGetPackOptionsControl.PackArgs = value;
+            }
+        }
 
         public List<NuGetSource> Sources
         {
@@ -56,7 +68,6 @@ namespace CnSharp.VisualStudio.NuPack.Controls
             if (_sdkBased)
             {
                 _dotnetPackOptionsControl = new DotnetPackOptionsControl();
-                _dotnetPackOptionsControl.PackArgs = PackArgs;
                 _dotnetPackOptionsControl.SymbolsCheckedChanged += (sender, e) =>
                 {
                     var checkBox = sender as CheckBox;
@@ -69,7 +80,6 @@ namespace CnSharp.VisualStudio.NuPack.Controls
             else
             {
                 _nuGetPackOptionsControl = new NuGetPackOptionsControl();
-                _nuGetPackOptionsControl.PackArgs = PackArgs;
                 _nuGetPackOptionsControl.SymbolsCheckedChanged += (sender, e) =>
                 {
                     var checkBox = sender as CheckBox;
