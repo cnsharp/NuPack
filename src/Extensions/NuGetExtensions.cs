@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using CnSharp.VisualStudio.Extensions;
@@ -76,14 +77,37 @@ namespace CnSharp.VisualStudio.NuPack.Extensions
                 metadata.Copyright = commonMetadata.Copyright;
             if (metadata.Icon.IsEmptyOrPlaceHolder() && commonMetadata.Icon.IsNotEmptyOrPlaceHolder())
                 metadata.Icon = commonMetadata.Icon;
-            if (metadata.IconUrl == null && commonMetadata.IconUrl != null)
-                metadata.SetIconUrl(commonMetadata.IconUrl.AbsoluteUri);
-            if (metadata.LicenseUrl == null && commonMetadata.LicenseUrl != null)
-                metadata.SetLicenseUrl(commonMetadata.LicenseUrl.AbsoluteUri);
+            try
+            {
+                if (metadata.IconUrl == null && commonMetadata.IconUrl != null)
+                    metadata.SetIconUrl(commonMetadata.IconUrl.AbsoluteUri);
+            }
+            catch (UriFormatException ignored)
+            {
+
+            }
+            try
+            {
+                if (metadata.LicenseUrl == null && commonMetadata.LicenseUrl != null)
+                    metadata.SetLicenseUrl(commonMetadata.LicenseUrl.AbsoluteUri);
+            }
+            catch (UriFormatException ignored)
+            {
+
+            }
+
             if (metadata.LicenseMetadata == null && commonMetadata.LicenseMetadata != null)
                 metadata.LicenseMetadata = commonMetadata.LicenseMetadata;
-            if (metadata.ProjectUrl == null && commonMetadata.ProjectUrl != null)
-                metadata.SetProjectUrl(commonMetadata.ProjectUrl.AbsoluteUri);
+            try
+            {
+                if (metadata.ProjectUrl == null && commonMetadata.ProjectUrl != null)
+                    metadata.SetProjectUrl(commonMetadata.ProjectUrl.AbsoluteUri);
+            }
+            catch (UriFormatException ignored)
+            {
+
+            }
+
             if (metadata.Readme.IsEmptyOrPlaceHolder() && commonMetadata.Readme.IsNotEmptyOrPlaceHolder())
                 metadata.Readme = commonMetadata.Readme;
             if (metadata.ReleaseNotes.IsEmptyOrPlaceHolder() && commonMetadata.ReleaseNotes.IsNotEmptyOrPlaceHolder())

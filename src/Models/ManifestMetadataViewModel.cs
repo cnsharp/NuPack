@@ -40,14 +40,29 @@ namespace CnSharp.VisualStudio.NuPack.Models
             LicenseMetadata = metadata.LicenseMetadata;
 
             // licenseUrl is deprecated, keep it just for old projects when LicenseMetadata is null
-            if (metadata.LicenseMetadata == null && metadata.LicenseUrl != null)
+            try
             {
-                LicenseUrlString = metadata.LicenseUrl?.OriginalString;
+                if (metadata.LicenseMetadata == null && metadata.LicenseUrl != null)
+                {
+                    LicenseUrlString = metadata.LicenseUrl?.OriginalString;
+                }
+            }
+            catch (UriFormatException ignored)
+            {
+
             }
 
-            _projectUrlString = metadata.ProjectUrl?.OriginalString ?? string.Empty;
-            if (!string.IsNullOrWhiteSpace(_projectUrlString))
-                SetProjectUrl(_projectUrlString);
+            try
+            {
+                _projectUrlString = metadata.ProjectUrl?.OriginalString ?? string.Empty;
+                if (!string.IsNullOrWhiteSpace(_projectUrlString))
+                    SetProjectUrl(_projectUrlString);
+            }
+            catch (UriFormatException ignored)
+            {
+
+            }
+
             Version = metadata.Version;
         }
 
