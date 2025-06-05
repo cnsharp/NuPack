@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
     <Metadata>
-        <Identity Id="nupack2022.d2452476-22fd-4075-a2bf-bd967e65abdc" Version="17.1.0" Language="en-US" Publisher="CnSharp Studio" />
-        <DisplayName>NuPack 2022</DisplayName>
+        <Identity Id="NuPack.CnSharp.969b0d0e-e751-4464-b958-c1896bfeb363" Version="17.1.0" Language="en-US" Publisher="CnSharp Studio" />
+        <DisplayName>NuPack</DisplayName>
         <Description xml:space="preserve">A wizard for building and deploying NuGet packages.</Description>
         <MoreInfo>https://www.cnsharp.com</MoreInfo>
         <License>LICENSE.txt</License>
