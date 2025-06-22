@@ -13,8 +13,11 @@ Visual Studio extension for building and publishing NuGet packages.
 
 ## Migration for Classic projects
 * Use `Upgrade` command in project context menu to migrate your classic projects to SDK-based projects.
+
 ![Upgrade project](https://raw.githubusercontent.com/cnsharp/nupack/master/screenshots/17.x/upgrade_classic_projects.png)
+
 * Use `Migrate package.nuspec to Package Properties` command of this extend to migrate your package.nuspec to Package Properties.
+
 ![Migrate .nuspec](https://raw.githubusercontent.com/cnsharp/nupack/master/screenshots/17.x/migrate_nuspec.png)
 
 ## Release notes
@@ -22,5 +25,5 @@ Visual Studio extension for building and publishing NuGet packages.
 [Release notes](https://raw.githubusercontent.com/cnsharp/nupack/master/release_notes.txt)
 
 ## Download
-* [VS 2022](https://marketplace.visualstudio.com/items?itemName=CnSharpStudio.NuPack2022)
-* [VS 2019 and Previous](https://marketplace.visualstudio.com/items?itemName=CnSharpStudio.NuPack)
+* [VS 2022](https://marketplace.visualstudio.com/items?itemName=CnSharpStudio.NuPack)
+* [VS 2017/2019](https://github.com/cnsharp/NuPack/releases/tag/2017)
