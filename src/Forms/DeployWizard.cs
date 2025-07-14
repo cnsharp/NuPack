@@ -57,8 +57,6 @@ namespace CnSharp.VisualStudio.NuPack.Forms
             stepWizardControl.Finished += StepWizardControl_Finished;
             wizardPageMetadata.Commit += WizardPageCommit;
             wizardPageOptions.Commit += WizardPageCommit;
-
-            BindSources();
         }
 
         public DeployWizard(DTE2 dte) : this()
@@ -97,7 +95,7 @@ namespace CnSharp.VisualStudio.NuPack.Forms
             _projectDir = _project.GetDirectory();
             var outputDir = Path.Combine(_projectDir, "bin", Common.ProductName);
             _optionsControl.SdkBased = _isSdkBased;
-            _optionsControl.LoadConfig(_projectDir, outputDir);
+            _optionsControl.LoadConfig(_slnDir, _projectDir, outputDir);
         }
 
         private void InitProjectPackageInfo(PackageProjectProperties ppp, Project project)
@@ -108,11 +106,6 @@ namespace CnSharp.VisualStudio.NuPack.Forms
                 ppp.Version = "1.0.0";
         }
 
-        private void BindSources()
-        {
-            var sources = new NuGetConfigReader(_slnDir, _projectDir).GetNuGetSources();
-            _optionsControl.Sources = sources;
-        }
 
         private void WizardPageCommit(object sender, WizardPageConfirmEventArgs e)
         {

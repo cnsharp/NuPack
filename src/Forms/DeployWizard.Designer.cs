@@ -36,7 +36,6 @@
             this.errorProvider = new System.Windows.Forms.ErrorProvider(this.components);
             this.openAssemblyInfoFileDialog = new System.Windows.Forms.OpenFileDialog();
             ((System.ComponentModel.ISupportInitialize)(this.stepWizardControl)).BeginInit();
-            this.wizardPageMetadata.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
             this.SuspendLayout();
             // 
@@ -65,7 +64,7 @@
             // wizardPageOptions
             // 
             this.wizardPageOptions.Name = "wizardPageOptions";
-            this.wizardPageOptions.Size = new System.Drawing.Size(890, 306);
+            this.wizardPageOptions.Size = new System.Drawing.Size(890, 523);
             this.stepWizardControl.SetStepText(this.wizardPageOptions, "Build/Deploy");
             this.wizardPageOptions.TabIndex = 3;
             this.wizardPageOptions.Text = "Build/Deploy";
@@ -93,7 +92,6 @@
             this.Text = "Deploy Wizard";
             this.Load += new System.EventHandler(this.DeployWizard_Load);
             ((System.ComponentModel.ISupportInitialize)(this.stepWizardControl)).EndInit();
-            this.wizardPageMetadata.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).EndInit();
             this.ResumeLayout(false);
 

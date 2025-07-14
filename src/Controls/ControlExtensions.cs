@@ -29,7 +29,7 @@ namespace CnSharp.VisualStudio.NuPack.Controls
             };
         }
 
-        public static void AttachPlaceHolder(this Control textBox, string placeholder, Color foreColor)
+        public static Control AttachPlaceHolder(this Control textBox, string placeholder, Color foreColor)
         {
             var label = new Label
             {
@@ -59,6 +59,7 @@ namespace CnSharp.VisualStudio.NuPack.Controls
                     label.Show();
                 }
             };
+            return label;
         }
 
         public static Control AttachCloseButton(this ComboBox comboBox)

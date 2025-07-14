@@ -49,6 +49,19 @@
     <Compile Include="Commands\AddDirectoryBuildPropsCommand.cs" />
     <Compile Include="Commands\AddNuSpecCommand.cs" />
     <Compile Include="Commands\AssemblyInfoEditCommand.cs" />
+    <Compile Include="Commands\BatchPushCommand.cs" />
+    <Compile Include="Controls\NuGetServerOptionsControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\NuGetServerOptionsControl.Designer.cs">
+      <DependentUpon>NuGetServerOptionsControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\BatchPushingForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\BatchPushingForm.Designer.cs">
+      <DependentUpon>BatchPushingForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Models\NuspecMsbuildMapper.cs" />
     <Compile Include="Resources.cs" />
     <Compile Include="Util\TargetFrameworkConverter.cs" />
@@ -134,6 +147,12 @@
     <EmbeddedResource Include="Controls\NuGetPackOptionsControl.resx">
       <DependentUpon>NuGetPackOptionsControl.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Controls\NuGetServerOptionsControl.resx">
+      <DependentUpon>NuGetServerOptionsControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\BatchPushingForm.resx">
+      <DependentUpon>BatchPushingForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Resources\licenses.json" />
     <None Include="source.extension.vsixmanifest">
       <SubType>Designer</SubType>
@@ -194,6 +213,7 @@
     <EmbeddedResource Include="Resources\NuSpecTemplate.xml" />
     <Content Include="Resources\PackageDeployment.png" />
     <Content Include="Resources\PackageProperty.png" />
+    <Content Include="Resources\Push.png" />
     <Content Include="Resources\reload32.png" />
     <Content Include="Resources\zip.ico" />
     <Content Include="screenshots.png">
