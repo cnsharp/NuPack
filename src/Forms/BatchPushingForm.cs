@@ -61,6 +61,9 @@ namespace CnSharp.VisualStudio.NuPack.Forms
                 NuGetVersion maxVersion = null;
                 foreach (var nupkg in nupkgs)
                 {
+                    // skip legacy symbols file
+                    if (nupkg.EndsWith(Common.LegacyNuGetPackageSymbolsFileExt))
+                        continue;
                     var fi = new FileInfo(nupkg);
                     if (packagesAdded.Contains(fi.Name))
                         continue;
