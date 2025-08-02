@@ -13,7 +13,9 @@ Visual Studio extension for building and publishing NuGet packages.
 ![Pack options](https://raw.githubusercontent.com/cnsharp/nupack/master/screenshots/17.x/pack_push.png)
 
 ### Batch push packages
-![Batch push](https://raw.githubusercontent.com/cnsharp/nupack/master/screenshots/17.x/batch_push.png)
+![Batch push menu](https://raw.githubusercontent.com/cnsharp/nupack/master/screenshots/17.x/batch_push_menu.png)
+
+![Batch push](https://raw.githubusercontent.com/cnsharp/nupack/master/screenshots/17.x/batch_push_packages.png)
 
 ## Migration for Classic projects
 * Use `Upgrade` command in project context menu to migrate your classic projects to SDK-based projects.
@@ -28,6 +30,8 @@ Visual Studio extension for building and publishing NuGet packages.
 
 [Release notes](https://raw.githubusercontent.com/cnsharp/nupack/master/release_notes.txt)
 
-## Download
-* [VS 2022](https://marketplace.visualstudio.com/items?itemName=CnSharpStudio.NuPack2022)
-* [VS 2019 and Previous](https://marketplace.visualstudio.com/items?itemName=CnSharpStudio.NuPack)
+## Previous Versions
+
+Archived on Github.
+
+[3.0 (For VS 2017/2019)](https://github.com/cnsharp/NuPack/releases/tag/2017)
