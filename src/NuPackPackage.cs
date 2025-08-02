@@ -80,6 +80,7 @@ namespace CnSharp.VisualStudio.NuPack
             await AssemblyInfoEditCommand.InitializeAsync(this);
             await DeployPackageCommand.InitializeAsync(this);
             await MigrateNuspecToProjectCommand.InitializeAsync(this);
+            await BatchPushCommand.InitializeAsync(this);
         }
 
 

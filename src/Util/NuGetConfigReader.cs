@@ -12,7 +12,7 @@ namespace CnSharp.VisualStudio.NuPack.Util
         private const string NuGet = "NuGet";
         private const string VsOfflinePackages = "Microsoft Visual Studio Offline Packages";
         private static readonly string NuGetConfigFileSubDir = Path.Combine(NuGet, ConfigFileName);
-        private static readonly string AppDataDir = Path.Combine(System.Environment.GetFolderPath(System.Environment.SpecialFolder.ApplicationData),
+        private static readonly string AppDataDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
            NuGetConfigFileSubDir);
         private readonly string _solutionDirectory;
         private readonly string _projectDirectory;

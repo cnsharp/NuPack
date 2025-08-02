@@ -19,14 +19,17 @@ namespace CnSharp.VisualStudio.NuPack
         public const string guidAssemblyInfoFileImageString = "5eef0341-bf87-44d6-a23a-7ff27bee5514";
         public static Guid guidAssemblyInfoFileImage = new Guid(guidAssemblyInfoFileImageString);
 
+        public const string guidBatchPushImageString = "f39bac0a-266c-4381-b287-56a6187272ba";
+        public static Guid guidBatchPushImage = new Guid(guidBatchPushImageString);
+
         public const string guidAddDirectoryBuildPropsPackageCmdSetString = "0a4174db-9a22-4ce5-a1cb-b7f63855308f";
         public static Guid guidAddDirectoryBuildPropsPackageCmdSet = new Guid(guidAddDirectoryBuildPropsPackageCmdSetString);
 
         public const string guidAddNuSpecPackageCmdSetString = "1eefc81f-e74a-427a-a9e5-671d321226a1";
         public static Guid guidAddNuSpecPackageCmdSet = new Guid(guidAddNuSpecPackageCmdSetString);
 
-        public const string guidAssemblyInfoEditPackageCmdSetString = "4005afc6-1b77-4227-a90e-13a792a6ebb5";
-        public static Guid guidAssemblyInfoEditPackageCmdSet = new Guid(guidAssemblyInfoEditPackageCmdSetString);
+        public const string guidSolutionCmdSetString = "4005afc6-1b77-4227-a90e-13a792a6ebb5";
+        public static Guid guidSolutionCmdSet = new Guid(guidSolutionCmdSetString);
 
         public const string guidDeployPackageCmdSetString = "7d371e13-afd3-4d17-8c84-9bf0fe65da2a";
         public static Guid guidDeployPackageCmdSet = new Guid(guidDeployPackageCmdSetString);
@@ -50,12 +53,14 @@ namespace CnSharp.VisualStudio.NuPack
     internal sealed partial class PackageIds
     {
         public const int assemblyInfoFilePic = 0x0001;
+        public const int pushPic = 0x0001;
         public const int SolutionAddGroup = 0x1020;
         public const int cmdidAddDirectoryBuildPropsCommand = 0x00FD;
         public const int ProjectAddGroup = 0x1020;
         public const int cmdidAddNuSpecCommand = 0x00FC;
         public const int SolutionGroup = 0x1020;
         public const int cmdidAssemblyInfoEditCommand = 0x00FF;
+        public const int cmdidBatchPushCommand = 0x0100;
         public const int DeployMenuGroup = 0x1020;
         public const int cmdidDeployPackageCommand = 0x0100;
         public const int deployPic = 0x0001;

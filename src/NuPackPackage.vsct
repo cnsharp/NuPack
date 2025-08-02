@@ -9,25 +9,25 @@
   <Commands package="guidNuPackPackage">
     <Groups>
       <Group guid="guidAddDirectoryBuildPropsPackageCmdSet" id="SolutionAddGroup" priority="0x0600">
-        <Parent guid="guidSHLMainMenu" id="IDM_VS_CSCD_SOLUTION_ADD"/>
+        <Parent guid="guidSHLMainMenu" id="IDM_VS_CSCD_SOLUTION_ADD" />
       </Group>
-      <Group guid="guidAssemblyInfoEditPackageCmdSet" id="SolutionGroup" priority="0x0600">
-        <Parent guid="guidSHLMainMenu" id="IDM_VS_CTXT_SOLNNODE"/>
+      <Group guid="guidSolutionCmdSet" id="SolutionGroup" priority="0x0600">
+        <Parent guid="guidSHLMainMenu" id="IDM_VS_CTXT_SOLNNODE" />
       </Group>
       <Group guid="guidDeployPackageCmdSet" id="DeployMenuGroup" priority="0x0600">
         <Parent guid="guidSHLMainMenu" id="IDM_VS_CTXT_PROJNODE" />
       </Group>
       <Group guid="guidAddNuSpecPackageCmdSet" id="ProjectAddGroup" priority="0x0600">
-        <Parent guid="guidSHLMainMenu" id="IDM_VS_CSCD_PROJECT_ADD"/>
+        <Parent guid="guidSHLMainMenu" id="IDM_VS_CSCD_PROJECT_ADD" />
       </Group>
       <Group guid="guidMigrateNuspecToProjectCmdSet" id="MigrateNuspecMenuGroup" priority="0x0600">
-        <Parent guid="guidSHLMainMenu" id="IDM_VS_CTXT_ITEMNODE"/>
+        <Parent guid="guidSHLMainMenu" id="IDM_VS_CTXT_ITEMNODE" />
       </Group>
     </Groups>
 
     <Buttons>
-      <Button guid="guidAssemblyInfoEditPackageCmdSet" id="cmdidAssemblyInfoEditCommand" priority="0x0100" type="Button">
-        <Parent guid="guidAssemblyInfoEditPackageCmdSet" id="SolutionGroup" />
+      <Button guid="guidSolutionCmdSet" id="cmdidAssemblyInfoEditCommand" priority="0x0100" type="Button">
+        <Parent guid="guidSolutionCmdSet" id="SolutionGroup" />
         <Icon guid="guidAssemblyInfoFileImage" id="assemblyInfoFilePic" />
         <CommandFlag>DefaultInvisible</CommandFlag>
         <CommandFlag>DynamicVisibility</CommandFlag>
@@ -67,11 +67,19 @@
           <ButtonText>$Project$.nuspec</ButtonText>
         </Strings>
       </Button>
+      <Button guid="guidSolutionCmdSet" id="cmdidBatchPushCommand" priority="0x0101" type="Button">
+        <Parent guid="guidSolutionCmdSet" id="SolutionGroup" />
+        <Icon guid="guidBatchPushImage" id="pushPic" />
+        <Strings>
+          <ButtonText>Batch Push Packages...</ButtonText>
+        </Strings>
+      </Button>
     </Buttons>
 
 
     <Bitmaps>
       <Bitmap guid="guidAssemblyInfoFileImage" href="Resources\AssemblyInfoFile.png" usedList="assemblyInfoFilePic" />
+      <Bitmap guid="guidBatchPushImage" href="Resources\push.png" usedList="pushPic" />
       <Bitmap guid="guidPackageDeploymentImage" href="Resources\PackageDeployment.png" usedList="deployPic" />
       <Bitmap guid="guidPackagePropertyImage" href="Resources\PackageProperty.png" usedList="migrateNuspecPic" />
     </Bitmaps>
@@ -89,6 +97,10 @@
       <IDSymbol name="assemblyInfoFilePic" value="1" />
     </GuidSymbol>
 
+    <GuidSymbol name="guidBatchPushImage" value="{f39bac0a-266c-4381-b287-56a6187272ba}">
+      <IDSymbol name="pushPic" value="1" />
+    </GuidSymbol>
+
     <GuidSymbol name="guidAddDirectoryBuildPropsPackageCmdSet" value="{0A4174DB-9A22-4CE5-A1CB-B7F63855308F}">
       <IDSymbol name="SolutionAddGroup" value="0x1020" />
       <IDSymbol name="cmdidAddDirectoryBuildPropsCommand" value="253" />
@@ -99,9 +111,10 @@
       <IDSymbol name="cmdidAddNuSpecCommand" value="252" />
     </GuidSymbol>
 
-    <GuidSymbol value="{4005AFC6-1B77-4227-A90E-13A792A6EBB5}" name="guidAssemblyInfoEditPackageCmdSet">
+    <GuidSymbol value="{4005AFC6-1B77-4227-A90E-13A792A6EBB5}" name="guidSolutionCmdSet">
       <IDSymbol value="4128" name="SolutionGroup" />
       <IDSymbol value="255" name="cmdidAssemblyInfoEditCommand" />
+      <IDSymbol value="256" name="cmdidBatchPushCommand" />
     </GuidSymbol>
 
     <GuidSymbol value="{7d371e13-afd3-4d17-8c84-9bf0fe65da2a}" name="guidDeployPackageCmdSet">
@@ -123,5 +136,7 @@
     </GuidSymbol>
 
     <GuidSymbol name="guidMigrateNuspecToProjectUIRule" value="{C0D08B33-DC49-4362-9B60-CC7761E29944}" />
+ 
+ 
   </Symbols>
 </CommandTable>

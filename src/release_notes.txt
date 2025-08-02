@@ -1,4 +1,7 @@
-﻿### V17.1.0 6/1/2025
+﻿### V17.2.0 8/3/2025
+* Add batch push packages feature.
+
+### V17.1.0 6/1/2025
 * Restore support for classic projects.
 * Restore support for AssemblyInfo editing.
 * Restore support for Directory.Build.props.

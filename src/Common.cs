@@ -7,6 +7,10 @@ namespace CnSharp.VisualStudio.NuPack
     {
         public const string ProductName = "NuPack";
 
+        public const string NuGetPackageFileExt = ".nupkg";
+        public const string LegacyNuGetPackageSymbolsFileExt = ".symbols.nupkg";
+        public const string NuGetPackageSymbolsFileExt = ".snupkg";
+
         public static readonly string[] SupportedProjectTypes = { ".csproj", ".vbproj",".fsproj" };
 
         public static string GetOrganization()

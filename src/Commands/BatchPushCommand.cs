@@ -1,24 +1,25 @@
-﻿using System;
-using System.ComponentModel.Design;
-using System.Linq;
-using CnSharp.VisualStudio.Extensions;
-using CnSharp.VisualStudio.NuPack.Extensions;
-using CnSharp.VisualStudio.NuPack.Forms;
-using CnSharp.VisualStudio.NuPack.Util;
+﻿using CnSharp.VisualStudio.Extensions;
 using Microsoft.VisualStudio.Shell;
+using Microsoft.VisualStudio.Shell.Interop;
+using System;
+using System.ComponentModel.Design;
+using System.Globalization;
+using System.Threading;
+using System.Threading.Tasks;
+using CnSharp.VisualStudio.NuPack.Forms;
 using Task = System.Threading.Tasks.Task;
 
 namespace CnSharp.VisualStudio.NuPack.Commands
 {
     /// <summary>
-    /// Command handler for AssemblyInfo file editing
+    /// Command handler
     /// </summary>
-    internal sealed class AssemblyInfoEditCommand
+    internal sealed class BatchPushCommand
     {
         /// <summary>
         /// Command ID.
         /// </summary>
-        public const int CommandId = PackageIds.cmdidAssemblyInfoEditCommand;
+        public const int CommandId = 256;
 
         /// <summary>
         /// Command menu group (command set GUID).
@@ -31,34 +32,25 @@ namespace CnSharp.VisualStudio.NuPack.Commands
         private readonly AsyncPackage package;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="AssemblyInfoEditCommand"/> class.
+        /// Initializes a new instance of the <see cref="BatchPushCommand"/> class.
         /// Adds our command handlers for menu (commands must exist in the command table file)
         /// </summary>
         /// <param name="package">Owner package, not null.</param>
         /// <param name="commandService">Command service to add command to, not null.</param>
-        private AssemblyInfoEditCommand(AsyncPackage package, OleMenuCommandService commandService)
+        private BatchPushCommand(AsyncPackage package, OleMenuCommandService commandService)
         {
             this.package = package ?? throw new ArgumentNullException(nameof(package));
             commandService = commandService ?? throw new ArgumentNullException(nameof(commandService));
 
             var menuCommandID = new CommandID(CommandSet, CommandId);
-            var menuItem = new OleMenuCommand(Execute, menuCommandID);
-            menuItem.BeforeQueryStatus += MenuItemOnBeforeQueryStatus;
+            var menuItem = new MenuCommand(this.Execute, menuCommandID);
             commandService.AddCommand(menuItem);
-        }
-
-        private void MenuItemOnBeforeQueryStatus(object sender, EventArgs e)
-        {
-            var dte = Host.Instance.Dte2;
-            if (dte == null) return;
-            var cmd = (OleMenuCommand)sender;
-            cmd.Visible = SolutionDataCache.Instance.GetSolutionProperties(dte.Solution.FileName).Projects.Any(p => p.HasAssemblyInfo());
         }
 
         /// <summary>
         /// Gets the instance of the command.
         /// </summary>
-        public static AssemblyInfoEditCommand Instance
+        public static BatchPushCommand Instance
         {
             get;
             private set;
@@ -67,11 +59,11 @@ namespace CnSharp.VisualStudio.NuPack.Commands
         /// <summary>
         /// Gets the service provider from the owner package.
         /// </summary>
-        private IAsyncServiceProvider ServiceProvider
+        private Microsoft.VisualStudio.Shell.IAsyncServiceProvider ServiceProvider
         {
             get
             {
-                return package;
+                return this.package;
             }
         }
 
@@ -81,12 +73,12 @@ namespace CnSharp.VisualStudio.NuPack.Commands
         /// <param name="package">Owner package, not null.</param>
         public static async Task InitializeAsync(AsyncPackage package)
         {
-            // Switch to the main thread - the call to AddCommand in AssemblyInfoEditCommand's constructor requires
+            // Switch to the main thread - the call to AddCommand in BatchPushCommand's constructor requires
             // the UI thread.
             await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync(package.DisposalToken);
 
             OleMenuCommandService commandService = await package.GetServiceAsync(typeof(IMenuCommandService)) as OleMenuCommandService;
-            Instance = new AssemblyInfoEditCommand(package, commandService);
+            Instance = new BatchPushCommand(package, commandService);
         }
 
         /// <summary>
@@ -100,29 +92,7 @@ namespace CnSharp.VisualStudio.NuPack.Commands
         {
             ThreadHelper.ThrowIfNotOnUIThread();
             var dte = Host.Instance.Dte2;
-            try
-            {
-                var sln = dte.Solution;
-                var sp = SolutionDataCache.Instance.GetSolutionProperties(sln.FileName);
-                var allProjects = sp.Projects;
-                if (!allProjects.Any())
-                {
-                    MessageBoxHelper.ShowErrorMessageBox("No project is opening.");
-                    return;
-                }
-
-                var projectsWithAssemblyInfo = allProjects.Where(p => p.HasAssemblyInfo()).ToList();
-                if (!projectsWithAssemblyInfo.Any())
-                {
-                    MessageBoxHelper.ShowErrorMessageBox("No project with AssemblyInfo found.");
-                    return;
-                }
-                new AssemblyInfoForm(projectsWithAssemblyInfo).ShowDialog();
-            }
-            catch (Exception exception)
-            {
-                MessageBoxHelper.ShowErrorMessageBox(exception.Message);
-            }
+            new BatchPushingForm(dte).Show();
         }
     }
 }
